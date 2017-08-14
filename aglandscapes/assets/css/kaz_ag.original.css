@@ -1,0 +1,13 @@
+.header{
+  color: white;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: white;
+}
+
+body{
+  background-color: white;
+  padding: 0px;
+}
+

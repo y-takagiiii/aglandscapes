@@ -5,9 +5,12 @@
       // 開始日、終了日が未入力
       if(($_POST['start'] ==' ') && ($_POST['finsh'] == ' ')){
         $error['days'] ='blank';
-      }if(empty($error)){
-        $SESSION['search_items'] = $_POST;
-        header('Location: search_result.php');
+      }
+      if(!isset($error)){
+        // $_SESSION['search_items'] = array($_POST['start'],$_POST['finish'],$_POST['product']);
+        // $_SESSION['search_items2'] = array('product'=>$_POST['value']);
+        $_SESSION['search_items'] = array($_POST['start'],$_POST['finish'],$_POST['product']);
+        header('Location: search_items_check.php');
         exit();
       }
     }
@@ -126,166 +129,166 @@
   <!-- 作物セクション -->
       <section id="panel-3">
         <main>
-          <div class="produce" id="produce">
+          <div class="row produce" id="produce">
             <div class="produce-item">
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-001.gif"></p>
-                    <p><input type="checkbox" name="product" value="1">キャベツ</p>
+                    <p><input type="checkbox" name="product[]" value="1">キャベツ</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-002.gif"></p>
-                    <p><input type="checkbox" name="product" value="2">トマト</p>
+                    <p><input type="checkbox" name="product[]" value="2">トマト</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-003.gif"></p>
-                    <p><input type="checkbox" name="product" value="3">ナス</p>
+                    <p><input type="checkbox" name="product[]" value="3">ナス</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-004.gif"></p>
-                    <p><input type="checkbox" name="product" value="4">きゅうり</p>
+                    <p><input type="checkbox" name="product[]" value="4">きゅうり</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-005.gif"></p>
-                    <p><input type="checkbox" name="product" value="5">さつまいも</p>
+                    <p><input type="checkbox" name="product[]" value="5">さつまいも</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-006.gif"></p>
-                    <p><input type="checkbox" name="product" value="6">にんじん</p>
+                    <p><input type="checkbox" name="product[]" value="6">にんじん</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-007.gif"></p>
-                    <p><input type="checkbox" name="product" value="7">だいこん</p>
+                    <p><input type="checkbox" name="product[]" value="7">だいこん</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-019.gif"></p>
-                    <p><input type="checkbox" name="product" value="8">じゃがいも</p>
+                    <p><input type="checkbox" name="product[]" value="8">じゃがいも</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-028.gif"></p>
-                    <p><input type="checkbox" name="product" value="9">ピーマン</p>
+                    <p><input type="checkbox" name="product[]" value="9">ピーマン</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-035.gif"></p>
-                    <p><input type="checkbox" name="product" value="10">たまねぎ</p>
+                    <p><input type="checkbox" name="product[]" value="10">たまねぎ</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-037.gif"></p>
-                    <p><input type="checkbox" name="product" value="11">葉野菜</p>
+                    <p><input type="checkbox" name="product[]" value="11">葉野菜</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/vegitable01-045.gif"></p>
-                    <p><input type="checkbox" name="product" value="12">その他の野菜</p>
+                    <p><input type="checkbox" name="product[]" value="12">その他の野菜</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-001.png"></p>
-                    <p><input type="checkbox" name="product" value="13">りんご</p>
+                    <p><input type="checkbox" name="product[]" value="13">りんご</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-003.png"></p>
-                    <p><input type="checkbox" name="product" value="14">さくらんぼ</p>
+                    <p><input type="checkbox" name="product[]" value="14">さくらんぼ</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-004.png"></p>
-                    <p><input type="checkbox" name="product" value="15">みかん</p>
+                    <p><input type="checkbox" name="product[]" value="15">みかん</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-006.png"></p>
-                    <p><input type="checkbox" name="product" value="16">メロン</p>
+                    <p><input type="checkbox" name="product[]" value="16">メロン</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-008.png"></p>
-                    <p><input type="checkbox" name="product" value="17">いちご</p>
+                    <p><input type="checkbox" name="product[]" value="17">いちご</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-009.png"></p>
-                    <p><input type="checkbox" name="product" value="18">なし</p>
+                    <p><input type="checkbox" name="product[]" value="18">なし</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-015.png"></p>
-                    <p><input type="checkbox" name="product" value="19">すいか</p>
+                    <p><input type="checkbox" name="product[]" value="19">すいか</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-020.png"></p>
-                    <p><input type="checkbox" name="product" value="20">ぶどう</p>
+                    <p><input type="checkbox" name="product[]" value="20">ぶどう</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-037.png"></p>
-                    <p><input type="checkbox" name="product" value="21">もも</p>
+                    <p><input type="checkbox" name="product[]" value="21">もも</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-038.png"></p>
-                    <p><input type="checkbox" name="product" value="22">かき</p>
+                    <p><input type="checkbox" name="product[]" value="22">かき</p>
                   </div>
                 </div>
 
                 <div class="col-ld-1 col-md-2 col-sm-3 col-xs-6">
                   <div class="produce-box">
                     <p><img src="img/fruitsicon01-011.png"></p>
-                    <p><input type="checkbox" name="product" value="23">その他の果物</p>
+                    <p><input type="checkbox" name="product[]" value="23">その他の果物</p>
                   </div>
                 </div>
             </div>

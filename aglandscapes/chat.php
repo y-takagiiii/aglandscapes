@@ -11,10 +11,6 @@
 
 
       $sql = 'SELECT * FROM `members` WHERE `member_id` ='.$_SESSION['login_member_id'];
-      // ログインする際にはPOST送信で送信されているのでarray($POST())になるが
-      // すでにログインしている人をSESSIONで情報を保存している
-      // どこの画面からでも使えるSESSIONで使える
-      // ログインしている情報をいろんなページで閲覧できるようにSESSIONで保存した方が使いやすい
       $stmt = $dbh->prepare($sql);
       $stmt->execute();
       $record = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,9 +23,19 @@
       exit();
     }
 
-
+// article_idを$_SESSIONに代入
     $_SESSION['article_id'] = $_GET['article_id'];
 
+
+// 募集記事を書いた人の名前取得
+    $sql = 'SELECT * FROM `articles` INNER JOIN `members` ON `articles`.`member_id`=`members`.`member_id` WHERE `article_id` ='.$_SESSION['article_id'];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+    $farm = $record['name'];
+
+
+// 募集記事表示に必要な情報取得
     $sql = 'SELECT * FROM `articles` WHERE `article_id`='.$_SESSION['article_id'];
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
@@ -37,62 +43,53 @@
 
     while ($record = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
+      $sql = 'SELECT COUNT(*) as `favorite_count` FROM `favorites` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+      $stmt_flag = $dbh->prepare($sql);
+      $stmt_flag->execute();
+      $favorite_cnt = $stmt_flag->fetch(PDO::FETCH_ASSOC);
 
 
-    $sql = 'SELECT COUNT(*) as `favorite_count` FROM `favorites` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
-
-    // sql文実行
-    $stmt_flag = $dbh->prepare($sql);
-    $stmt_flag->execute();
-    $favorite_cnt = $stmt_flag->fetch(PDO::FETCH_ASSOC);
-
-
-        $card[] = array("article_id"=>$record['article_id'],
-                         "member_id"=>$record['member_id'],
-                             "title"=>$record['title'],
-                     "prefecture_id"=>$record['prefecture_id'],
-                             "place"=>$record['place'],
-                            "access"=>$record['access'],
-                             "start"=>$record['start'],
-                            "finish"=>$record['finish'],
-                        "product_id"=>$record['product_id'],
-                              "work"=>$record['work'],
-                        "treatment1"=>$record['treatment1'],
-                        "treatment2"=>$record['treatment2'],
-                        "treatment3"=>$record['treatment3'],
-                        "treatment4"=>$record['treatment4'],
-                        "treatment5"=>$record['treatment5'],
-                        "treatment6"=>$record['treatment6'],
-                        "landscapes"=>$record['landscapes'],
-                           "comment"=>$record['comment'],
-                     "favorite_flag"=>$favorite_cnt
-                            );
+          $card[] = array("article_id"=>$record['article_id'],
+                           "member_id"=>$record['member_id'],
+                               "title"=>$record['title'],
+                       "prefecture_id"=>$record['prefecture_id'],
+                               "place"=>$record['place'],
+                              "access"=>$record['access'],
+                               "start"=>$record['start'],
+                              "finish"=>$record['finish'],
+                          "product_id"=>$record['product_id'],
+                                "work"=>$record['work'],
+                          "treatment1"=>$record['treatment1'],
+                          "treatment2"=>$record['treatment2'],
+                          "treatment3"=>$record['treatment3'],
+                          "treatment4"=>$record['treatment4'],
+                          "treatment5"=>$record['treatment5'],
+                          "treatment6"=>$record['treatment6'],
+                          "landscapes"=>$record['landscapes'],
+                             "comment"=>$record['comment'],
+                       "favorite_flag"=>$favorite_cnt
+                              );
 
     }
 
 
-
+// カード内の都道府県をidから取ってきて名前で表示
     $sql = 'SELECT * FROM `prefectures` INNER JOIN `articles` ON `prefectures`.`prefecture_id`=`articles`.`prefecture_id` WHERE `article_id` ='.$_SESSION['article_id'];
-
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
     $record = $stmt->fetch(PDO::FETCH_ASSOC);
-
     $prefecture = $record['prefecture'];
 
-
+// カード内の作物をidから取ってきて名前で表示
     $sql = 'SELECT * FROM `products` INNER JOIN `articles` ON `products`.`product_id`=`articles`.`product_id` WHERE `article_id` ='.$_SESSION['article_id'];
-
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
     $record = $stmt->fetch(PDO::FETCH_ASSOC);
-
     $product = $record['product'];
 
 
 
-
-
+// お気に入り押しているやつは出さない、出すの取得
     if($favorite_cnt['favorite_count']==0){
       $favorite_flag=0; //favoriteされていない
     }else{
@@ -100,7 +97,31 @@
     }
 
 
+      if (!empty($_POST)) {
 
+        if ($_POST['content'] != '') {
+        $sql = 'INSERT INTO `questions` SET `member_id`=?,
+                                              `content`=?,
+                                           `article_id`=?,
+                                            `answer_id`=?,
+                                              `created`=NOW()';
+        $data = array($_SESSION['login_member_id'], $_POST['content'], $_SESSION['article_id'], $_POST['member_id']);
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute($data);
+
+          // 画面再表示（再送信防止）
+        header('Location: index.php');
+        exit();
+      }
+    }
+
+
+// 質問内容取得
+    $sql = 'SELECT * FROM `questions` WHERE `question_id`=5';
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+    $content = $record['content'];
 
 
 
@@ -126,15 +147,9 @@
     $comment = $record['comment'];
     $landscape = $record['landscapes'];
     $article_id = $record['article_id'];
-
+    $member_id = $record['member_id'];
 
   }
-
-
-
-
-
-
 
 
 
@@ -180,8 +195,9 @@
                 </div>
 
                 <!-- 右側の部分 -->
-                <div class="col-xs-12 col-sm-8 col-md-7">
-                  <div>
+              <div class="col-xs-12 col-sm-8 col-md-7">
+                <div>
+                  <form method="post" action="" class="form-horizontal" role="form">
                     <div class="panel-footer">
                       <div class="input-group">
                         <textarea id="btn-input" type="text" class="form-control input-sm"
@@ -190,7 +206,7 @@
                         <br>
                       </div>
                         <span class="input-group-btn">
-                          <button class="btn btn-warning btn-sm pull-right" id="btn-chat">送信</button>
+                          <input type="submit" class="btn btn-warning btn-sm pull-right" id="btn-chat" value="送信">
                         </span>
                       <div class="panel-heading">
                           <span class="glyphicon glyphicon-comment"></span> 質問
@@ -202,11 +218,11 @@
                             <span class="chat-img pull-left"></span>
                             <div class="chat-body clearfix farmer">
                               <div class="header">
-                                <strong class="primary-font">〇〇さん</strong>
+                                <strong class="primary-font"><?php echo $farm; ?>さん</strong>
                                 <small class="pull-right text-muted">
                                 <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
                               </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
+                              <p><?php echo $content; ?></p>
                             </div>
                           </li>
                           <li class="left clearfix">
@@ -214,49 +230,9 @@
                             <div class="chat-body clearfix user">
                               <div class="header">
                                 <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
-                                <strong class="pull-right primary-font">自分</strong>
+                                <strong class="pull-right primary-font"><?php echo $name; ?></strong>
                               </div>
                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                            <span class="chat-img pull-left"></span>
-                            <div class="chat-body clearfix farmer">
-                              <div class="header">
-                                <strong class="primary-font">〇〇さん</strong> <small class="pull-right text-muted">
-                                <span class="glyphicon glyphicon-time"></span>14 mins ago</small>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
-                          <li class="left clearfix">
-                            <span class="chat-img pull-right"></span>
-                            <div class="chat-body clearfix user">
-                              <div class="header">
-                                <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>15 mins ago</small>
-                                <strong class="pull-right primary-font">自分</strong>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
-                          <li class="right clearfix">
-                            <span class="chat-img pull-left"></span>
-                            <div class="chat-body clearfix farmer">
-                              <div class="header">
-                                <strong class="primary-font">〇〇さん</strong>
-                                <small class="pull-right text-muted"><span class="glyphicon glyphicon-time"></span>12 mins ago</small>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
-                          <li class="left clearfix">
-                            <span class="chat-img pull-right"></span>
-                            <div class="chat-body clearfix user">
-                              <div class="header">
-                                <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 </small>
-                                <strong class="pull-right primary-font">自分</strong>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornaredolor, quis ullamcorper ligula sodales.</p>
                             </div>
                           </li>
                           <li class="right clearfix">
@@ -281,8 +257,9 @@
                           </li>
                       </ul>
                     </div>
-                  </div>
+                  </form>
                 </div>
+              </div>
                         <!-- 空白 -->
                 <Table border="0" width="100%" height="60" cellspacing="0" bgcolor="#ffffff">
                   <Tr>
@@ -292,7 +269,7 @@
                   <div class="container">
                     <div class="row">
                       <div class="text-center">
-                        <a href="#" class="btn btn-default">トップページへ</a><br><br><br><br>
+                        <a href="top.php" class="btn btn-default">トップページへ</a><br><br><br><br>
                       </div>
                     </div>
                   </div>

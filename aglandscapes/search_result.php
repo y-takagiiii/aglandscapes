@@ -3,8 +3,9 @@
     // var_dump($_GET['prefecture_id']);//前の画面から送られてきたIDが何か判別できる
     require('dbconnect.php');
 
-    $_SESSION['login_member_id']=1;
-    $_SESSION['time']=time();
+     $_SESSION['search_item']['product']=2;
+
+
 
         //   //ログインチェック
     if(isset($_SESSION['login_member_id']) && ($_SESSION['time'] + 3600 >time())){
@@ -16,9 +17,7 @@
 
     // 都道府県検索
     if(isset($_GET['prefecture_id'])){
-    // articles&prefecturesより全てのデータを取ってくる
-    // $sql = 'SELECT * FROM `articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id` WHERE `prefectures`.`prefecture_id`='.$_GET['prefecture_id'];
-
+    // articles&prefectures&productsより全てのデータを取ってくる
     $sql = 'SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `prefectures`.`prefecture_id`='.$_GET['prefecture_id'];
 
     $stmt=$dbh->prepare($sql);
@@ -70,17 +69,64 @@
 
   }
 }
-    // 期間検索
-    // if(isset($_SESSION['start'] && $_SESSION['finish'])){
 
+    // $_SESSION['start']="0000-00-00 00:00:00";
+    // $_SESSION['finish']="0000-00-00 00:00:00";
+    // // 期間検索
+    // if($_SESSION['start']!=='NULL' && $_SESSION['finish']!=='NULL'){
+    // // articles&products&prefectureより全てのデータを取ってくる
+    // $sql='SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`='.$_SESSION['start'] AND '`articles`.`finish`='.$_SESSION['finish'];
+    // $stmt=$dbh->prepare($sql);
+    // $stmt->execute();
+    // $article=array();
+    // while($record=$stmt->fetch(PDO::FETCH_ASSOC)){
+
+    //     // favorite状態の取得（ログインユーザーごと）
+    // $sql='SELECT COUNT(*) as `favorite_count` FROM `favorites` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+
+    // // sql文実行
+    // $stmt_flag=$dbh->prepare($sql);
+    // $stmt_flag->execute();
+    // $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
+
+
+    // // 全件配列に入れる
+    // $article[]=array(
+    // "article_id"=>$record['article_id'],
+    // "member_id"=>$record['member_id'],
+    // "title"=>$record['title'],
+    // "prefecture_id"=>$record['prefecture_id'],
+    // "prefecture"=>$record['prefecture'],
+    // "place"=>$record['place'],
+    // "access"=>$record['access'],
+    // "start"=>$record['start'],
+    // "finish"=>$record['finish'],
+    // "product_id"=>$record['product_id'],
+    // "product"=>$record['product'],
+    // "work"=>$record['work'],
+    // "treatment1"=>$record['treatment1'],
+    // "treatment2"=>$record['treatment2'],
+    // "treatment3"=>$record['treatment3'],
+    // "treatment4"=>$record['treatment4'],
+    // "treatment5"=>$record['treatment5'],
+    // "treatment6"=>$record['treatment6'],
+    // "landscapes"=>$record['landscapes'],
+    // "comment"=>$record['comment'],
+    // "favorite_flag"=>$favorite_cnt
+    // );
+    //     if($favorite_cnt['favorite_count']==0){
+    //       $favorite_flag=0; //favoriteされていない
+    //     }else{
+    //       $favorite_flag=1; //favoriteされている
+    //     }
+    // }}
     // }
 
 
-    $_GET['product_id']=2;
     // 作物検索
-    if(isset($_GET['product_id'])){
-    // articles&productsより全てのデータを取ってくる
-    $sql='SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `products`.`product_id`='.$_GET['product_id'];
+    elseif(isset($_SESSION['search_item']['product'])){
+    // articles&products&prefecturesより全てのデータを取ってくる
+    $sql='SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `products`.`product_id`='.$_SESSION['search_item']['product'];
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     $article=array();
@@ -125,6 +171,9 @@
           $favorite_flag=1; //favoriteされている
         }
     }}
+  else{
+    echo"";
+  }
 
 ?>
 
@@ -174,21 +223,26 @@
             <!-- Title -->
             <div class="section-title">
               <div class="container">
-              <?php if (isset($_GET['prefecture_id'])) { ?>
-                  <h2 class="title" style="padding-top: 80px">地域別>><?php echo $article[0]['prefecture']; ?></h2>
-              <?php } ?>
-              <?php if (isset($_GET['product_id'])) { ?>
-                  <h2 class="title" style="padding-top: 80px">作物別>><?php echo $article[0]['product']; ?></h2>
-              <?php } ?>
+              <?php if (isset($_GET['prefecture'])) { ?>
+                  <h2 class="title" style="padding-top: 80px">地域>><?php echo $article[0]['prefecture']; ?></h2>
+              <?php }elseif(isset($_SESSION['search_item']['start']) && isset($_SESSION['search_item']['finish'])) { ?>
+                  <h2 class="title" style="padding-top: 80px">日付>><?php echo $article[0]['start']."~".$article[0]['finish']; ?></h2>
+              <?php }elseif(isset($_SESSION['search_item']['product'])) { ?>
+                  <h2 class="title" style="padding-top: 80px">作物>><?php echo $article[0]['product']; ?></h2>
+              <?php }else{ ?>
+                <h2 class="title" style="padding-top: 80px">検索結果はありませんでした。</h2>
+              <?php ;} ?>
                       </div>
 
 
 
-      <div class="container">
+      <!-- <div class="container"> -->
         <div class="row">
           <hr>
-            <div class="row row-margin-bottom">
+  <div class="col-md-6 col-sm-6 col-xs-12">
+            <!-- <div class="row row-margin-bottom"> -->
       <!-- card section-->
+    <?php if (isset($article)) { ?>
     <?php foreach ($article as $article_each) { ?>
 
     <?php $article_id=$article_each['article_id']; ?>
@@ -209,11 +263,14 @@
     <?php $landscape=$article_each['landscapes']; ?>
     <?php $comment=$article_each['comment']; ?>
     <?php $favorite_flag=$article_each['favorite_flag']['favorite_count']; ?>
-    <?php if(isset($_SESSION['apply_flag'])){
-        $apply_flag=$_SESSION['apply_flag'];} ?>
-  <?php include('card.php'); ?>
+        <?php if(isset($_SESSION['apply_flag'])){
+            $apply_flag=$_SESSION['apply_flag'];}?>
+    <?php require('card.php'); ?>
 
-  <?php } ?>
+  <?php }} ?>
+  </div>
+  </div>
+
 
 
 

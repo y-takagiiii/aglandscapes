@@ -1,7 +1,9 @@
 
 <?php
 session_start();//SESSION変数を使う時に絶対必要
-
+//デーtベースに接続
+    //外部ファイルから処理の読み込み
+  require('dbconnect.php');
 
 //ログインボタンが押された時
 if (!empty($_POST)){
@@ -9,9 +11,8 @@ if (!empty($_POST)){
 
   if ($_POST['email'] !=''&& $_POST['password']!=''){
 
-    //デーtベースに接続
-    //外部ファイルから処理の読み込み
-    require('dbconnect.php');
+    
+  
     // 今入力された情報の会員登録が存在しているかチェック
     //SELECT文で入力されたemail,passwordを条件にして一致するデータを取得
     $sql = 'SELECT * FROM `members` WHERE `email`= ?
@@ -40,7 +41,8 @@ if (!empty($_POST)){
 
     $_SESSION['time']=time();
     //1970年1月1日０時0分０秒から現在までの秒数が保存される
-    header('Location:top.php');
+
+    header('Location:top.php#search');
     exit();
   }
 
@@ -51,6 +53,90 @@ if (!empty($_POST)){
 
   }
   }
+    // articlesより全てのデータを取ってくる
+
+$page = '';
+
+//パラメータが存在したら、ページ番号を取得
+
+if(isset($_GET['page'])){
+  $page = $_GET['page'];
+}
+//パラメータが存在しない場合は、ページ番号を１とする
+if($page==''){
+  $page=1;
+  //max(-1,1)
+  //という指定の場合、大きい方の１が結果として返される。
+}
+//1以下のイレギュラーな数値が入ってきた場合は、ページ番号を１とする（max:中の複数の数値の中で最大の数値を返す関数）
+$page =max($page,1);
+
+//データの件数から最大ページ数を計算する
+
+
+
+//宿題：このSQL文を実行して、取得したデータ数をVar_dumpで表示しましょう。
+
+$sql = "SELECT COUNT(*) AS `cnt` FROM `articles` WHERE `delete_flag`=0";
+
+  $stmt=$dbh->prepare($sql);
+  $stmt->execute();
+  $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
+  var_dump($cnt['cnt']);
+
+
+
+$start = 0;
+
+$card_number = 6; //1 ページに何個つぶやきをだすか指定
+
+$max_page = ceil($cnt['cnt'] / $card_number);
+
+//パラメータのページ番号が最大ページ数を超えていれば、最後のページ数に設定する(min:指定された複数の数値の中で最小の数値を返す関数)
+
+$page = min($page,$max_page);
+//min(100,3)と指定されてたら、３が帰ってくる
+
+$start =($page -1) * $card_number;
+
+$sql = sprintf('SELECT * FROM `articles`  ORDER BY `articles`.`created`
+       DESC LIMIT  %d,%d',$start,$tweet_number);
+
+//SQL文実行
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+
+$articles=array();
+//データを取得して配列に保存
+while ($record = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+    // 全件配列に入れる
+    $article[]=array(
+    "article_id"=>$record['article_id'],
+    "member_id"=>$record['member_id'],
+    "title"=>$record['title'],
+    "prefecture_id"=>$record['prefecture_id'],
+    "prefecture"=>$record['prefecture'],
+    "place"=>$record['place'],
+    "access"=>$record['access'],
+    "start"=>$record['start'],
+    "finish"=>$record['finish'],
+    "product_id"=>$record['product_id'],
+    "product"=>$record['product'],
+    "work"=>$record['work'],
+    "treatment1"=>$record['treatment1'],
+    "treatment2"=>$record['treatment2'],
+    "treatment3"=>$record['treatment3'],
+    "treatment4"=>$record['treatment4'],
+    "treatment5"=>$record['treatment5'],
+    "treatment6"=>$record['treatment6'],
+    "landscapes"=>$record['landscapes'],
+    "comment"=>$record['comment'],
+    "favorite_flag"=>$favorite_cnt
+    );
+  }
+
+
 ?>
 
 
@@ -164,15 +250,15 @@ if (!empty($_POST)){
             <div class="container">
                <div class="statistics-box">
                   <div class="statistics-item">
-                     <a href="genre_search.php" class="value">都道府県</a>
+                     <a name="search" href="genre_search.php" class="value">都道府県</a>
                   </div>
 
                   <div class="statistics-item">
-                     <a href="genre_search.php" class="value">期間</a>
+                     <a name="search" href="genre_search.php" class="value">期間</a>
                   </div>
 
                  <div class="statistics-item">
-                     <a href="genre_search.php" class="value">作物</a>
+                     <a name="search" href="genre_search.php" class="value">作物</a>
                   </div>
                   
                </div>
@@ -180,8 +266,6 @@ if (!empty($_POST)){
             
             <br>
             <br>
-
-         
 
          <!-- Destinations Section -->
          <section class="section section-destination">
@@ -194,27 +278,68 @@ if (!empty($_POST)){
 
             <!-- card section-->
         
-      <div class="container">
-         <div class="row">
+         <div class="container">
+          <div class="row">
+            <hr>
+            <div class="row row-margin-bottom">
+      <!-- card section-->
+             <?php foreach ($article as $article_each) { ?>
 
-          <hr>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
+              <?php $article_id=$article_each['article_id']; ?>
+               <?php $title=$article_each['title']; ?>
+               <?php $prefecture=$article_each['prefecture']; ?>
+               <?php $place=$article_each['place']; ?>
+               <?php $access=$article_each['access']; ?>
+               <?php $start=$article_each['start']; ?>
+               <?php $finish=$article_each['finish']; ?>
+               <?php $product=$article_each['product']; ?>
+               <?php $work=$article_each['work']; ?>
+               <?php $treatment1=$article_each['treatment1']; ?>
+               <?php $treatment2=$article_each['treatment2']; ?>
+               <?php $treatment3=$article_each['treatment3']; ?>
+               <?php $treatment4=$article_each['treatment4']; ?>
+               <?php $treatment5=$article_each['treatment5']; ?>
+               <?php $treatment6=$article_each['treatment6']; ?>
+               <?php $landscape=$article_each['landscapes']; ?>
+               <?php $comment=$article_each['comment']; ?>
+               <?php $favorite_flag=$article_each['favorite_flag']['favorite_count']; ?>
+      
 
+            <?php include('card.php'); ?>
 
+            <?php } ?>
 
            </div>
-       </div>
-
+        </div>
+     </div>
 
             <div class="row row-margin-bottom">
 
-                 <div class="align-center">
-                  <a href="#" class="btn btn-default btn-load-destination"><span class="text">新着募集をもっと見る</span><i class="icon-spinner6"></i></a>
+               <div class="align-center">
+                  <a href="top.php?=<?php echo $page +1; ?>" class="btn btn-default btn-load-destination"><span class="text">新着募集をもっと見る</span><i class="icon-spinner6"></i></a>
+                   <ul class="paging">
+           
+                <li>
+                <?php if ($page >1){ ?>
+
+              
+                <a href="index.php?page=<?php echo $page -1; ?>" class="btn btn-default">戻る</a>
+                <?php } else { ?>
+                前
+                <?php } ?>
+                </li>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <li>
+                <?php if($page < $max_page){?>
+
+
+                <a href="index.php?page=<?php echo $page +1; ?>" class="btn btn-default btn-load-destination">新着情報をもっと見る</a></li>
+                <?php }else{ ?>
+                 次
+                 <?php } ?>
+
+                </li>
+          </ul>
                </div>
             </div>
 
@@ -231,12 +356,7 @@ if (!empty($_POST)){
          <div class="row">
 
           <hr>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
-      <?php include('card.php') ?>
+
 
           </div>
        </div>

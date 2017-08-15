@@ -110,20 +110,32 @@
         $stmt->execute($data);
 
           // 画面再表示（再送信防止）
-        header('Location: index.php');
-        exit();
+
       }
-    }
+        header('Location: chat.php');
+            }
 
 
 // 質問内容取得
-    $sql = 'SELECT * FROM `questions` WHERE `question_id`=5';
+    $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'];
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
-    $record = $stmt->fetch(PDO::FETCH_ASSOC);
-    $content = $record['content'];
+    $chat = array();
+        while ($rec = $stmt->fetch(PDO::FETCH_ASSOC)) {
+          $chat[] = array("member_id"=>$rec['member_id'],
+                            "content"=>$rec['content'],
+                          "answer_id"=>$rec['answer_id'],
+                         "reply_flag"=>$rec['reply_flag']);
+
+    }
 
 
+    foreach ($chat as $rec) {
+      $member = $rec['member_id'];
+     $content = $rec['content'];
+      $answer = $rec['answer_id'];
+       $reply = $rec['reply_flag'];
+    }
 
 
 
@@ -191,6 +203,10 @@
                 <div class="col-xs-12 col-sm-4 col-md-5">
                   <div>
                      <?php require('card.php'); ?>
+                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
+                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
+                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
+
                   </div>
                 </div>
 
@@ -222,7 +238,9 @@
                                 <small class="pull-right text-muted">
                                 <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
                               </div>
+                              <?php if ($reply == 1) { ?>
                               <p><?php echo $content; ?></p>
+                              <?php } ?>
                             </div>
                           </li>
                           <li class="left clearfix">
@@ -232,7 +250,9 @@
                                 <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
                                 <strong class="pull-right primary-font"><?php echo $name; ?></strong>
                               </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
+                              <?php if ($reply == 0) { ?>
+                              <p><?php echo $content; ?></p>
+                              <?php } ?>
                             </div>
                           </li>
                           <li class="right clearfix">

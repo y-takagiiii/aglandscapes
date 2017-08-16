@@ -96,6 +96,7 @@
       $favorite_flag=1; //favoriteされている
     }
 
+// var_dump($_POST);
 
       if (!empty($_POST)) {
 
@@ -105,37 +106,34 @@
                                            `article_id`=?,
                                             `answer_id`=?,
                                               `created`=NOW()';
-        $data = array($_SESSION['login_member_id'], $_POST['content'], $_SESSION['article_id'], $_POST['member_id']);
+        $data = array($_SESSION['login_member_id'], $_POST['content'], $_SESSION['article_id'], -1);
         $stmt = $dbh->prepare($sql);
         $stmt->execute($data);
 
           // 画面再表示（再送信防止）
 
       }
-        header('Location: chat.php');
+        // header('Location: chat.php');
             }
 
 
 // 質問内容取得
-    $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'];
+    $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
     $chat = array();
         while ($rec = $stmt->fetch(PDO::FETCH_ASSOC)) {
           $chat[] = array("member_id"=>$rec['member_id'],
                             "content"=>$rec['content'],
-                          "answer_id"=>$rec['answer_id'],
-                         "reply_flag"=>$rec['reply_flag']);
+                          "answer_id"=>$rec['answer_id']);
 
     }
 
+    $c = count($chat);
 
-    foreach ($chat as $rec) {
-      $member = $rec['member_id'];
-     $content = $rec['content'];
-      $answer = $rec['answer_id'];
-       $reply = $rec['reply_flag'];
-    }
+
+
+
 
 
 
@@ -210,17 +208,17 @@
                   </div>
                 </div>
 
-                <!-- 右側の部分 -->
-              <div class="col-xs-12 col-sm-8 col-md-7">
-                <div>
-                  <form method="post" action="" class="form-horizontal" role="form">
-                    <div class="panel-footer">
-                      <div class="input-group">
-                        <textarea id="btn-input" type="text" class="form-control input-sm"
-                                   placeholder="質問したい内容をこちらに入力してください。"></textarea>
-                        <br>
-                        <br>
-                      </div>
+                  <!-- 右側の部分 -->
+                <div class="col-xs-12 col-sm-8 col-md-7">
+                  <div>
+                    <form method="post" action="" class="form-horizontal" role="form">
+                      <div class="panel-footer">
+                        <div class="input-group">
+                          <textarea id="btn-input" name="content" type="text" class="form-control input-sm"
+                                     placeholder="質問したい内容をこちらに入力してください。"></textarea>
+                          <br>
+                          <br>
+                        </div>
                         <span class="input-group-btn">
                           <input type="submit" class="btn btn-warning btn-sm pull-right" id="btn-chat" value="送信">
                         </span>
@@ -228,8 +226,14 @@
                           <span class="glyphicon glyphicon-comment"></span> 質問
                       </div>
                     </div>
+                    <?php if (isset($chat)) { ?>
                     <div class="panel-body">
                       <ul class="chat">
+                        <?php foreach ($chat as $rec) {
+                              $member = $rec['member_id'];
+                             $content = $rec['content'];
+                              $answer = $rec['answer_id']; ?>
+                          <?php if ($answer != -1) { ?>
                           <li class="right clearfix">
                             <span class="chat-img pull-left"></span>
                             <div class="chat-body clearfix farmer">
@@ -238,11 +242,11 @@
                                 <small class="pull-right text-muted">
                                 <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
                               </div>
-                              <?php if ($reply == 1) { ?>
-                              <p><?php echo $content; ?></p>
-                              <?php } ?>
+                                <p><?php echo $content; ?></p>
                             </div>
                           </li>
+                          <?php } ?>
+                          <?php if ($answer == -1) {?>
                           <li class="left clearfix">
                             <span class="chat-img pull-right"></span>
                             <div class="chat-body clearfix user">
@@ -250,33 +254,14 @@
                                 <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
                                 <strong class="pull-right primary-font"><?php echo $name; ?></strong>
                               </div>
-                              <?php if ($reply == 0) { ?>
                               <p><?php echo $content; ?></p>
-                              <?php } ?>
                             </div>
                           </li>
-                          <li class="right clearfix">
-                            <span class="chat-img pull-left"></span>
-                            <div class="chat-body clearfix farmer">
-                              <div class="header">
-                                <strong class="primary-font">〇〇さん</strong> <small class="pull-right text-muted">
-                                <span class="glyphicon glyphicon-time"></span>14 mins ago</small>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
-                          <li class="left clearfix">
-                            <span class="chat-img pull-right"></span>
-                            <div class="chat-body clearfix user">
-                              <div class="header">
-                                <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>15 mins ago</small>
-                                <strong class="pull-right primary-font">自分</strong>
-                              </div>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.</p>
-                            </div>
-                          </li>
+                          <?php } ?>
                       </ul>
+                      <?php } ?>
                     </div>
+                   <?php } ?>
                   </form>
                 </div>
               </div>

@@ -118,14 +118,15 @@
 
 
 // 質問内容取得
-    $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+    $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'].' AND `member_id`='.$_SESSION['login_member_id']. ' ORDER BY `created` DESC';
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
     $chat = array();
         while ($rec = $stmt->fetch(PDO::FETCH_ASSOC)) {
           $chat[] = array("member_id"=>$rec['member_id'],
                             "content"=>$rec['content'],
-                          "answer_id"=>$rec['answer_id']);
+                          "answer_id"=>$rec['answer_id'],
+                            "created"=>$rec['created']);
 
     }
 
@@ -228,37 +229,41 @@
                     </div>
                     <?php if (isset($chat)) { ?>
                     <div class="panel-body">
-                      <ul class="chat">
                         <?php foreach ($chat as $rec) {
                               $member = $rec['member_id'];
                              $content = $rec['content'];
-                              $answer = $rec['answer_id']; ?>
+                              $answer = $rec['answer_id'];
+                                $time = $rec['created']; ?>
+                      <ul class="chat">
                           <?php if ($answer != -1) { ?>
-                          <li class="right clearfix">
+                          <li class="right clearfix" align="left">
                             <span class="chat-img pull-left"></span>
                             <div class="chat-body clearfix farmer">
                               <div class="header">
                                 <strong class="primary-font"><?php echo $farm; ?>さん</strong>
-                                <small class="pull-right text-muted">
-                                <span class="glyphicon glyphicon-time"></span>12 mins ago</small>
+                                <small class="pull-center text-muted">
+                                <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                               </div>
-                                <p><?php echo $content; ?></p>
                             </div>
+                            <p><?php echo $content; ?></p>
                           </li>
+                        </ul>
+                        <ul class="chat">
                           <?php } ?>
                           <?php if ($answer == -1) {?>
-                          <li class="left clearfix">
+                          <li class="left clearfix" align="right">
                             <span class="chat-img pull-right"></span>
                             <div class="chat-body clearfix user">
                               <div class="header">
-                                <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
                                 <strong class="pull-right primary-font"><?php echo $name; ?></strong>
+                                <small class="pull-center text-muted">
+                                <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                               </div>
-                              <p><?php echo $content; ?></p>
                             </div>
+                            <p><?php echo $content; ?></p>
                           </li>
                           <?php } ?>
-                      </ul>
+                        </ul>
                       <?php } ?>
                     </div>
                    <?php } ?>

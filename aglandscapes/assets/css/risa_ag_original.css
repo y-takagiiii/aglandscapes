@@ -22,6 +22,7 @@
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 1px dotted #B3A9A9;
+    width: 100%;
 }
 
 .chat li.left .chat-body
@@ -38,7 +39,7 @@
 .chat li .chat-body p
 {
     margin: 0;
-    color: #777777;
+    color: #000;
 }
 
 .panel .slidedown .glyphicon, .chat .glyphicon

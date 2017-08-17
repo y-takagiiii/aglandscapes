@@ -145,22 +145,27 @@
             <div class="post-header font-alt">
               <h1 class="post-title"></i>募集記事一覧</h1>
             </div>
+            <br>
+            <br>
             <div class="row">
               <div class="col-sm-12" style="width: 790px;">
                <table class="table table-striped table-bordered checkout-table">
                   <tbody>
                   <?php foreach ($card as $record) {
+                      $article = $record['article_id'];
                       $title = $record['title'];
                       $start = $record['start'];
                       $finish = $record['finish']; ?>
                     <tr>
                       <th class="hidden-xs" style="width: 126px">タイトル</th>
                       <th>期間</th>
+                      <th>質問</th>
                     </tr>
                     <?php if(isset($card)){ ?>
                     <tr>
-                      <td class="hidden-xs"><a href="#open01"><?php echo $title; ?></a></td><?php  ?>
+                      <td class="hidden-xs"><h5><?php echo $title; ?></h5></td>
                       <td><h5 class="product-title font-alt"><?php echo $start.'~'.$finish; ?></h5></td>
+                      <td><a href="answer.php" class="btn btn-default">質問ルームへ</a></td>
                     </tr>
                     <?php }else{echo "まだお気に入り記事がありません";} ?>
                     <?php } ?>
@@ -187,8 +192,8 @@
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="../assets/js/jquery-3.1.1.js"></script>
-    <script src="../assets/js/jquery-migrate-1.4.1.js"></script>
-    <script src="../assets/js/bootstrap.js"></script>
+    <script src="assets/js/jquery-3.1.1.js"></script>
+    <script src="assets/js/jquery-migrate-1.4.1.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
   </body>
 </html>

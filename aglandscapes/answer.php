@@ -26,7 +26,6 @@
 // article_idを$_SESSIONに代入
     $_SESSION['article_id'] = $_GET['article_id'];
 
-
 // 募集記事を書いた人の名前取得
     $sql = 'SELECT * FROM `articles` INNER JOIN `members` ON `articles`.`member_id`=`members`.`member_id` WHERE `article_id` ='.$_SESSION['article_id'];
     $stmt = $dbh->prepare($sql);

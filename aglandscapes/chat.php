@@ -130,7 +130,6 @@
 
     }
 
-    $c = count($chat);
 
 
 
@@ -180,6 +179,8 @@
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
+    <link href="assets/css/card_ag_original.css" rel="stylesheet">
+
   </head>
 
   <body>
@@ -202,10 +203,6 @@
                 <div class="col-xs-12 col-sm-4 col-md-5">
                   <div>
                      <?php require('card.php'); ?>
-                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
-                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
-                     <a type="button" href="" class="btn btn-primary col-xs-12">〇〇さんからの質問</a><br><br>
-
                   </div>
                 </div>
 
@@ -231,7 +228,7 @@
                     <div class="panel-body">
                         <?php foreach ($chat as $rec) {
                               $member = $rec['member_id'];
-                             $content = $rec['content'];
+                             $content = nl2br($rec['content']);
                               $answer = $rec['answer_id'];
                                 $time = $rec['created']; ?>
                       <ul class="chat">
@@ -266,7 +263,7 @@
                         </ul>
                       <?php } ?>
                     </div>
-                   <?php } ?>
+                    <?php } ?>
                   </form>
                 </div>
               </div>

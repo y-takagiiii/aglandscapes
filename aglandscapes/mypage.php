@@ -5,6 +5,7 @@
 
 
 
+
     //   //ログインチェック
     if(isset($_SESSION['login_member_id']) && ($_SESSION['time'] + 3600 >time())){
         // ログインしている
@@ -53,9 +54,17 @@
     $sql=sprintf('SELECT * FROM `members` WHERE `member_id`=%d',$_SESSION['login_member_id']);
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
-    $record2=$stmt->fetch(PDO::FETCH_ASSOC);
+    while($record2=$stmt->fetch(PDO::FETCH_ASSOC))
+      $account[]=array("profile"=>$record2['profile']);
   }
+
+    if(isset($apply[0]['apply_id'])){
+      $apply_id=$apply[0]['apply_id'];
+    }
+
     
+
+
 ?>
 
 <!DOCTYPE html>
@@ -92,7 +101,13 @@
 <!--         left column         -->
       <div class="col-md-2 col-sm-6 col-xs-12">
         <div class="text-center">
-        <img src="img/animal.jpg" class="avatar  img-thumbnail" alt="avatar">
+        <?php if (empty($account[0]['profile'])){ ?>
+        <img src="img/misteryman.jpg" style="width:160px;height:160px " alt="avatar">
+        <?php }else{ ?>
+        <img src="member_picture/<?php echo $account[0]['profile']; ?>" style="width:160px; height:160px " alt="avatar">
+
+        <?php } ?>
+
           <?php if (isset($record2['name'])){ ?>
           <div><?php echo $record2['name']; ?>さん、ようこそ
           </div>
@@ -104,6 +119,9 @@
           <div>
           <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事作成画面</button>
           </div>
+<!--           <br><br>
+           <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事一覧</button>
+          </div> -->
           <br><br>
           <div>
           <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='top.php'">トップページへ戻る</button>
@@ -140,7 +158,11 @@
                           </tr>
                         <?php if(isset($apply)){foreach($apply as $apply_each){ ?>
                           <tr>
-                            <td class="hidden-xs"><a href="#open01"><?php echo $apply_each["title"]; ?></a></td><?php include('popup.php'); ?>
+                            <td class="hidden-xs"><a href="#open<?php echo $apply_each['article_id']; ?>"><?php echo $apply_each["title"]; ?></a></td><?php 
+                            $article_id=$apply_each["article_id"];
+
+                            include('popup.php'); ?>
+
                             <td><h5 class="product-title font-alt"><?php echo $apply_each["start"].'~'.$apply_each["finish"]; ?></h5></td>
                             <td><h5 class="product-title font-alt"><?php echo "受け入れ完了";?></h5></td>
                             <td class="pr-remove"><input type="button" value="評価"></td>
@@ -189,11 +211,16 @@
                         <?php foreach($favorite as $favorite_each){ ?>
                         <tr>
                           <div id="contents">
-                          <td class="hidden-xs"><a href="#open01"><?php echo $favorite_each['title']?></a></td><?php include('popup.php'); ?>
+                          <td class="hidden-xs"><a href="#open<?php echo $favorite_each['article_id']; ?>"><?php echo $favorite_each['title']?></a></td><?php 
+                          $article_id=$favorite_each['article_id'];
+                          include('popup.php'); ?>
+
                           <td><h5 class="product-title font-alt"><?php echo $favorite_each['start']."~".$favorite_each['finish'];?></h5></td>
                           <td class="hidden-xs"><input type=button value="削除" onClick="location.href='unfavorite.php?article_id=<?php echo $favorite_each["article_id"]?>'"></td>
                           <td class="pr-remove"><input type="button" value="評価"></td>
                         </tr>
+                            
+
                           <?php } }else{echo "まだお気に入り記事がありません";} ?>
                       </tbody>
                     </table>

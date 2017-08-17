@@ -21,6 +21,11 @@
     border-top: 1px solid #eee;
 }
 
+.align-center {
+  display: inline-block;
+  text-align: left;
+}
+
 /* ContentsArea
 -------------------------- */
 #contents {
@@ -32,9 +37,9 @@
 p {
     padding: 10px 0;
 }
- 
-#open01,
-#open02 {
+
+
+.open {
     top: 0;
     left: 0;
     width: 100%;
@@ -58,7 +63,7 @@ p {
  
 .modal_window {
     top: 50%;
-    left: 50%;
+    left: 10%;
     margin: -150px 0 0 -200px;
     width: 800px;
     height: 300px;

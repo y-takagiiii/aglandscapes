@@ -115,9 +115,13 @@
           <div>
           <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='account.php'">アカウント情報の編集</button>
           </div>
-          <br><br>
+          <br>
           <div>
           <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事作成画面</button>
+          </div>
+          <br>
+          <div>
+          <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事一覧</button>
           </div>
 <!--           <br><br>
            <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事一覧</button>

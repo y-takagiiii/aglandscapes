@@ -51,14 +51,10 @@ $file_name = $_FILES['profile']['name'];
     //$error['picture_path']がtypeだったら「ファイルはjpg,gif,pngのいずれかを指定してください」というエラーメッセージを表示してください。」
     //チャレンジ問題！チェックする拡張子にjpegを追加してみてください。
     $ext = substr($file_name,-4);
-    if ($ext !='.jpg' && $ext !='.gif' && $ext !='.png' && $ext !='jpeg')
+    if ($ext !='.jpg' && $ext !='.gif' && $ext !='.png' && $ext !='.jpeg')
   {
     $error['profile'] = 'type';
   }
-  
-}
-
-
 
 if (empty($error)){
 
@@ -68,7 +64,15 @@ if (empty($error)){
   //$_FILES['picture_path']['tmp_name']->
   //サーバー上に仮にファイルが置かれている場所と名前
   move_uploaded_file ($_FILES ['profile']['tmp_name'],'member_picture/'.$profile);
+
 }
+
+  
+}else{
+
+  $profile = $account[0]['profile'];
+}
+
 
 //セッションに値を保存
 //$_SESSION どの画面でもアクセス可能なスーパーグローバル変数
@@ -84,7 +88,8 @@ if (empty($error)){
                              `modified`=now()  WHERE `member_id`=?';
                               
 
-   $data= array($_POST['name'],$_POST['email'],$_POST['address'],$_POST['phone_number'],$_POST['birthday'],$profile,$_POST['gender'],$_POST['self-introduction'],$_SESSION['login_member_id']);
+   $data= array($_POST['name'],$_POST['email'],$_POST['address'],$_POST['phone_number'],$_POST['birthday'],$profile,$_POST['gender'],$_POST['self-introduction'],
+         $_SESSION['login_member_id']);
    //SQL文実行
 
     $stmt = $dbh->prepare($sql);
@@ -142,7 +147,7 @@ if (empty($error)){
         <?php } ?>
 
 
-        <?php if(isset($error['profile']) && ($error['profile']=='type')) {?>
+        <?php if(isset($error['profile']) && ($error['profile']=='type')){ ?>
               <!--issetこの変数は存在していた時-->
               <p class="error">*ファイルはjpg,gif,pngのいずれかを指定してください」</p>
  　　　　　　　<?php }?>
@@ -219,8 +224,14 @@ if (empty($error)){
           <div class="col-lg-8">
             <div class="ui-select">
               <select name="gender" id="user_time_zone" class="form-control">
-                <option value="<?php echo $account[0]['gender'];?>">男性</option>
-                <option value="<?php echo $account[0]['gender'];?>">女性</option>   
+                
+                  <?php if( $account[0]['gender'] == '男性'){ ?>
+                    <option value="男性" selected>男性</option> 
+                    <option value="女性">女性</option>  
+                 <?php }else{ ?>
+                    <option value="男性" >男性</option> 
+                    <option value="女性" selected>女性</option>  
+                 <?php } ?> 
               </select>
             </div>
           </div>
@@ -243,20 +254,22 @@ if (empty($error)){
         <div class="form-group">
           <label class="col-lg-3 control-label">自己紹介</label>
           <div class="col-lg-8">
-           <input name="self-introduction" style="border:1px solid #CCC;padding:60px;border-radius:10px;width:530px" value="<?php echo $account[0]['self-introduction'];?>" placeholder="200文字以内"> 
+           <input name="self-introduction" style="border:1px solid #CCC;padding:60px;border-radius:10px;width:530px" 
+           value="<?php echo $account[0]['self-introduction'];?>" placeholder="200文字以内"> 
             
           </div>
         </div>
     
           <label class="text-center center-block ">
             <input type="checkbox" value="" >
-            <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+            <span class="cr"><i class="cr-icon glyphicon "></i></span>
             入力内容を確認しました。
           </label>
 
         <div class="form-group">
           <label class="col-md-3 control-label"></label>
           <div class="col-md-8">
+          <?php if (empty(type=){ ?>
             <input class="text-center center-block btn btn-primary" value="保存" type="submit">
             <br>
             <br>

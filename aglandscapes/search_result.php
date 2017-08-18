@@ -1,12 +1,10 @@
 <?php
     session_start();
 
-    var_dump($_SESSION['search_items']);
+    // var_dump($_SESSION['search_items']);
     //[search_items]・・・・・・ 0=[prefecture] 1=[start] 2=[finish] 3=[product]
 
     require('dbconnect.php');
-
-
 
 
         //   //ログインチェック
@@ -15,14 +13,51 @@
       // 最終アクション時間を更新
     $_SESSION['time'] = time();
 
-    }
+    
 
     // 都道府県検索
     if(isset($_SESSION['search_items']['prefecture'])){
 
+//ページング機能
+    $page='';
+    if(isset($_GET['page'])){
+      $page = $_GET['page'];
+    }
+    if ($page=='') {
+      $page=1;
+    }
+
+      // 1以下のイレギュラーな数値が入ってきた場合はページ番号を１とする(max:中の複数の数値の中で最大の数値を返す関数)
+      $page=max($page,1);
+      // max(-1,1)という指定の場合、大きい方の１が結果として返される
+
+    // データの件数から最大ページ数を計算する
+    $max_page=0;
+
+// このSQL文を実行して、取得したデータ数をvar_dumpで表示しましょう。
+    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `prefectures`.`prefecture_id`='.$_SESSION['search_items']['prefecture'];
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+    // データ数取得
+    $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
+    var_dump($cnt['cnt']);
+    $start=0;
+    // 1ページ目：０
+    // 2ページ目：１０
+    // 3ページ目：２０
+
+    $article_number=10;  //1ページに何個つぶやきを出すか指定
+    // 少数点を切り上げた計算結果を代入
+    $max_page=ceil($cnt['cnt']/$article_number);
+
+    // パラメータのページ番号が最大ページ数を超えていれば、最後のページ数に設定する(min:指定された複数の最小の数値を返す関数)
+    $page = min($page, $max_page);
+    // min(100,5) と指定されていたら、５が返ってくる
+
+    $start=($page-1)*$article_number;
 
     // articles&prefectures&productsより全てのデータを取ってくる
-    $sql = 'SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `prefectures`.`prefecture_id`='.$_SESSION['search_items']['prefecture'];
+    $sql = sprintf('SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `prefectures`.`prefecture_id`='.$_SESSION['search_items']['prefecture']. ' ORDER BY `articles`.`created` DESC LIMIT %d,%d',$start,$article_number);
 
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
@@ -76,9 +111,48 @@
 
 
     // 期間検索
-    if($_SESSION['search_items']['start']!=='NULL' && $_SESSION['search_items']['finish']!=='NULL'){
+    if((isset($_SESSION['search_items']['start']) && !empty($_SESSION['search_items']['start'])) && (isset($_SESSION['search_items']['finish'])&& !empty($_SESSION['search_items']['finish']))){
+
+//ページング機能
+    $page='';
+    if(isset($_GET['page'])){
+      $page = $_GET['page'];
+    }
+    if ($page=='') {
+      $page=1;
+    }
+
+      // 1以下のイレギュラーな数値が入ってきた場合はページ番号を１とする(max:中の複数の数値の中で最大の数値を返す関数)
+      $page=max($page,1);
+      // max(-1,1)という指定の場合、大きい方の１が結果として返される
+
+    // データの件数から最大ページ数を計算する
+    $max_page=0;
+
+// このSQL文を実行して、取得したデータ数をvar_dumpで表示しましょう。
+    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`=\''.$_SESSION['search_items']['finish'].'\'';
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+    // データ数取得
+    $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
+    var_dump($cnt['cnt']);
+    $start=0;
+    // 1ページ目：０
+    // 2ページ目：１０
+    // 3ページ目：２０
+
+    $article_number=10;  //1ページに何個つぶやきを出すか指定
+    // 少数点を切り上げた計算結果を代入
+    $max_page=ceil($cnt['cnt']/$article_number);
+
+    // パラメータのページ番号が最大ページ数を超えていれば、最後のページ数に設定する(min:指定された複数の最小の数値を返す関数)
+    $page = min($page, $max_page);
+    // min(100,5) と指定されていたら、５が返ってくる
+
+    $start=($page-1)*$article_number;
+
     // articles&products&prefectureより全てのデータを取ってくる
-    $sql='SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`='.$_SESSION['search_items']['start'] AND '`articles`.`finish`='.$_SESSION['search_items']['finish'];
+    $sql=sprintf('SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`=\''.$_SESSION['search_items']['finish'].'\''. ' ORDER BY `articles`.`created` DESC LIMIT %d,%d',$start,$article_number);
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     $article=array();
@@ -175,7 +249,7 @@
         }
     }}
 
-
+    }else{echo '今は表示できません';}
 ?>
 
 <!DOCTYPE html>
@@ -228,7 +302,7 @@
                   <h2 class="title" style="padding-top: 80px">地域>><?php echo $article[0]['prefecture']; ?></h2>
 
               <?php ;} ?>
-              <?php if(isset($_SESSION['search_items']['start']) && isset($_SESSION['search_item']['finish'])) { ?>
+              <?php if((isset($_SESSION['search_items']['start']) && !empty($_SESSION['search_items']['start'])) && (isset($_SESSION['search_items']['finish'])&& !empty($_SESSION['search_items']['finish']))) { ?>
                   <h2 class="title" style="padding-top: 80px">日付>><?php echo $article[0]['start']."~".$article[0]['finish']; ?></h2>
               <?php ;} ?>
               <?php if(isset($_SESSION['search_items']['product'][0])) { ?>
@@ -236,11 +310,11 @@
               <?php if(!isset($_SESSION['search_items'])){ ?>
                 <h2 class="title" style="padding-top: 80px">検索結果はありませんでした。</h2>
               <?php ;}} ?>
-                      </div>
+              </div><!-- container -->
 
 
 
-      <!-- <div class="container"> -->
+      <div class="container">
         <div class="row">
           <hr>
             <!-- <div class="row row-margin-bottom"> -->
@@ -271,9 +345,9 @@
   <div class="col-md-6">
 
     <?php require('card.php'); ?>
-</div>
+</div><!-- col-md-6 -->
   <?php }} ?>
-  </div>
+  </div><!-- row -->
 
 
 
@@ -281,30 +355,31 @@
 
 
                <div class="align-center">
-                  <!-- <?php if ($page>1){ ?> -->
-                  <!-- <a href="search_result.php?page=<?php echo $page -1; ?>" class="btn btn-default btn-load-boats"> -->
-                    <!-- <span class="text">前 -->
-                    <!-- </span> -->
-                    <!-- <i class="icon-spinner6"> -->
-                    <!-- </i> -->
+                   <?php if ($page>1){ ?> 
+                  <a href="search_result.php?page=<?php echo $page -1; ?>" class="btn btn-info btn-load-boats">
+                    <span class="text">前
+                    </span>
+                    <i class="icon-spinner6">
+                    </i>
                   </a>
-                  <!-- <?php }else{ ?> -->
+                  <?php }else{ ?>
                   前
-                  <!-- <?php } ?> -->
-                  <a href="#" class="btn btn-default btn-load-boats">
-                    <span class="text">2
+                  <?php } ?>
+
+                <?php if($page<$max_page){ ?>
+
+                  <a href="search_result.php?page=<?php echo $page +1; ?>" class="btn btn-info btn-load-boats">
+                    <span class="text">後
                     </span>
                     <i class="icon-spinner6">
                     </i>
                   </a>
-                  <a href="#" class="btn btn-default btn-load-boats">
-                    <span class="text">3
-                    </span>
-                    <i class="icon-spinner6">
-                    </i>
-                  </a>
+                <?php }else{ ?>
+                次
+                <?php } ?>
+               </div><!-- align-center -->
                </div>
-            </div>
+            </div><!-- section-title -->
          </section>
       </div>
     </div>

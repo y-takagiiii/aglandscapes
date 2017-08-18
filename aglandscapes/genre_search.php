@@ -9,8 +9,10 @@
       if(!isset($error)){
         // $_SESSION['search_items'] = array($_POST['start'],$_POST['finish'],$_POST['product']);
         // $_SESSION['search_items2'] = array('product'=>$_POST['value']);
-        $_SESSION['search_items'] = array($_POST['start'],$_POST['finish'],$_POST['product']);
-        header('Location: search_items_check.php');
+        $_SESSION['search_items'] = $_POST;
+        // $_SESSION['search_items']['prefecture'] = $_GET['prefecture'];
+
+                header('Location: search_check.php');
         exit();
       }
     }
@@ -88,6 +90,14 @@
             <div id="map" style="width:100%;"></div>
               <p id="text" style="padding: 10px; width: 800px; color: #ffffff; text-align: center"></p>
           </div>
+          <!-- 選んだ都道府県を表示 -->
+          <div class="low" style="text-align: center">
+          <form method="post" action="">
+            <input type="text" id="my_selsct_area">
+            <input type="hidden" name="prefecture" id="my_selsct_code">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>検索</button>
+          </form>
+          </div>
         </main>
       </section>
 
@@ -125,8 +135,10 @@
           </div>
         </main>
       </section>
+      </form>
 
   <!-- 作物セクション -->
+    <form method="post" action="">
       <section id="panel-3">
         <main>
           <div class="row produce" id="produce">
@@ -339,13 +351,21 @@ $(function(){
             onSelect:function(data){
                 //クリックした時にやりたい処理を書く！！
                 //alert(data.name);
-                location.href = "search_result.php?prefecture_id="+ data.code;
+                // location.href = "genre_search.php?prefecture_id="+ data.code;
+
+                $('#my_selsct_area').val(
+            data.name
+            );
+                $('#my_selsct_code').val(
+            data.code
+            );
+
             },
         }
     );
     $('#datepicker-inline .in-line').datepicker(
         {
-            format: "yyyy/mm/dd",
+            format: "yyyy-mm-dd",
             language: "ja"
         });
 
@@ -357,7 +377,7 @@ $(function(){
 
     $('#datepicker-inline2 .in-line2').datepicker(
         {
-            format: "yyyy/mm/dd",
+            format: "yyyy-mm-dd",
             language: "ja"
         });
     $('.in-line2').on('changeDate', function() {

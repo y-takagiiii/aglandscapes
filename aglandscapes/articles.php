@@ -38,9 +38,6 @@
       }
 
 
-
-
-
     $sql = 'SELECT * FROM `articles` WHERE `member_id`='.$_SESSION['login_member_id'];
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
@@ -93,6 +90,7 @@
     <link href="assets/css/anly_ag_original.css" rel="stylesheet">
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
 
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
@@ -165,9 +163,12 @@
                     <tr>
                       <td class="hidden-xs"><h5><?php echo $title; ?></h5></td>
                       <td><h5 class="product-title font-alt"><?php echo $start.'~'.$finish; ?></h5></td>
-                      <td><a href="answer.php" class="btn btn-default">質問ルームへ</a></td>
+                      <td>
+                      <button type="submit" class="btn btn-default" onClick="location.href='answer.php?article_id=<?php echo $article;?>'">質問ルームへ</button></td>
                     </tr>
-                    <?php }else{echo "まだお気に入り記事がありません";} ?>
+                    <?php }else{
+                      echo "まだ投稿した記事がありません";
+                      } ?>
                     <?php } ?>
                   </tbody>
                 </table>

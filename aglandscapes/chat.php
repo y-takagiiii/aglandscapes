@@ -180,6 +180,7 @@
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
     <link href="assets/css/card_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
 
   </head>
 
@@ -244,9 +245,9 @@
                             </div>
                             <p><?php echo $content; ?></p>
                           </li>
+                          <?php } ?>
                         </ul>
                         <ul class="chat">
-                          <?php } ?>
                           <?php if ($answer == -1) {?>
                           <li class="left clearfix" align="right">
                             <span class="chat-img pull-right"></span>

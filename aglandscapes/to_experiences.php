@@ -1,3 +1,25 @@
+<?php
+    session_start();
+    require('dbconnect.php'); 
+
+
+
+    if (isset($_SESSION['login_member_id']) && ($_SESSION['time'] + 3600 > time())) {
+      // 存在してたらログインしてる
+      // 最終アクション時間を更新
+      $_SESSION['time'] = time();
+
+
+      $sql = 'SELECT * FROM `members` WHERE `member_id` ='.$_SESSION['login_member_id'];
+      $stmt = $dbh->prepare($sql);
+      $stmt->execute();
+      $record = $stmt->fetch(PDO::FETCH_ASSOC);
+      $name = $record['name'];
+
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -55,7 +77,7 @@
             </div><br><br>
           <div>
             <center>
-            <a href="login.html" class="btn btn-default">ログイン</a>
+            <a href="top.php" class="btn btn-default">トップページ</a>
             </center>
             <br>
             <br>
@@ -71,9 +93,9 @@
 
 
       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-      <script src="../assets/js/jquery-3.1.1.js"></script>
-      <script src="../assets/js/jquery-migrate-1.4.1.js"></script>
-      <script src="../assets/js/bootstrap.js"></script>
+      <script src="assets/js/jquery-3.1.1.js"></script>
+      <script src="assets/js/jquery-migrate-1.4.1.js"></script>
+      <script src="assets/js/bootstrap.js"></script>
   </body>
 </html>
 

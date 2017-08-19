@@ -76,7 +76,8 @@
                                   `treatment5`=?,
                                   `treatment6`=?,
                                   `landscapes`=?,
-                                     `comment`=?';
+                                     `comment`=?,
+                                     `created`=NOW()';
 
 
 
@@ -110,9 +111,9 @@
 
     <title>AGLANDSCAPES</title>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript" language="javascript"></script>
-    <!-- <script src="../common/js/bootstrap.js"></script>
-    <link rel="stylesheet" href="../common/css/bootstrap.css"> -->
-    <!-- <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"> -->
+    <script src="js/bootstrap.js"></script>
+    <!-- <link rel="stylesheet" href="../common/css/bootstrap.css"> -->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="bootstrap-datepicker/css/bootstrap-datepicker.min.css">
     <script type="text/javascript" src="bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="bootstrap-datepicker/locales/bootstrap-datepicker.ja.min.js"></script>
@@ -125,6 +126,7 @@
     <link href="assets/css/jpn_ag_original.css" rel="stylesheet">
     <link href="assets/css/card_main.css" rel="stylesheet">
     <link href="assets/css/card_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
 
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！

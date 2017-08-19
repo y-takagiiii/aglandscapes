@@ -28,7 +28,19 @@
       exit();
     }
 
+    $sql = 'SELECT * FROM `members` WHERE `member_id`='.$_SESSION['login_member_id'];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    $member = array();
 
+    while ($rec = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $member[] = array("member_id"=>$rec['member_id'],
+                             "name"=>$rec['name'],
+                            "email"=>$rec['email'],
+                     "phone_number"=>$rec['phone_number'],
+                          "address"=>$rec['address'],
+                          "profile"=>$rec['profile']);
+    }
 
     if (!empty($_POST)) {
       // エラー項目の確認
@@ -184,6 +196,8 @@
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/jpn_main.css" rel="stylesheet">
     <link href="assets/css/jpn_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
+
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
      -->
@@ -204,7 +218,13 @@
               <br>
               <br>
               <center>
-                <img src="img/animal.jpg">
+                <?php foreach ($member as $rec) {
+                    $profile = $rec['profile']; ?>
+                <?php if (empty($profile)){ ?>
+                <img src="img/misteryman.jpg" style="width:160px;height:160px ">
+                          <?php }else{ ?>
+                <img src="member_picture/<?php echo $profile; ?>" class="avatar img-thumbnail">
+                <?php } } ?>
               </center>
               <div>
                 <br>

@@ -36,6 +36,8 @@
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
+
 
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！

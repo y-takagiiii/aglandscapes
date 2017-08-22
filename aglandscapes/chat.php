@@ -35,6 +35,29 @@
     $farm = $record['name'];
 
 
+
+    $sql = sprintf('SELECT * FROM `applies` INNER JOIN `articles` ON `applies`.`article_id`=`articles`.`article_id` WHERE `applies`.`member_id`=%d',$_SESSION['login_member_id']);
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+
+        // データ取得
+    while($record=$stmt->fetch(PDO::FETCH_ASSOC)){
+      // $recordにfalseが代入されたとき処理が終了します
+    // （データの一番最後まで取得してしまい、次に取得するデータが存在しないとき）
+      // $tweets[]..配列の最後に新しいデータを追加する
+      $apply[]=array(
+        "apply_id"=>$record['apply_id'],
+        "member_id"=>$record['member_id'],
+        "article_id"=>$record['article_id'],
+        "title"=>$record['title'],
+        "start"=>$record['start'],
+        "finish"=>$record['finish']
+        );
+
+      }
+
+
+
 // 募集記事表示に必要な情報取得
     $sql = 'SELECT * FROM `articles` WHERE `article_id`='.$_SESSION['article_id'];
     $stmt = $dbh->prepare($sql);
@@ -133,6 +156,12 @@
 
 
 
+    if(isset($apply[0]['apply_id'])){
+      $apply_id=$apply[0]['apply_id'];
+    }
+    if(isset($_SESSION['apply_flag'])) {
+        $apply_flag=$_SESSION['apply_flag'];
+      }
 
 
 
@@ -179,7 +208,6 @@
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
-    <link href="assets/css/card_ag_original.css" rel="stylesheet">
     <link href="assets/css/body.css" rel="stylesheet">
 
   </head>
@@ -221,18 +249,18 @@
                         <span class="input-group-btn">
                           <input type="submit" class="btn btn-warning btn-sm pull-right" id="btn-chat" value="送信">
                         </span>
-                      <div class="panel-heading">
+                        <div class="panel-heading">
                           <span class="glyphicon glyphicon-comment"></span> 質問
+                        </div>
                       </div>
-                    </div>
-                    <?php if (isset($chat)) { ?>
-                    <div class="panel-body">
+                      <div class="panel-body">
+                      <?php if (isset($chat)) { ?>
                         <?php foreach ($chat as $rec) {
                               $member = $rec['member_id'];
                              $content = nl2br($rec['content']);
                               $answer = $rec['answer_id'];
                                 $time = $rec['created']; ?>
-                      <ul class="chat">
+                        <ul class="chat">
                           <?php if ($answer != -1) { ?>
                           <li class="right clearfix" align="left">
                             <span class="chat-img pull-left"></span>
@@ -242,12 +270,12 @@
                                 <small class="pull-center text-muted">
                                 <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                               </div>
-                            </div>
                             <p><?php echo $content; ?></p>
+                            </div>
                           </li>
-                          <?php } ?>
                         </ul>
                         <ul class="chat">
+                        <?php } ?>
                           <?php if ($answer == -1) {?>
                           <li class="left clearfix" align="right">
                             <span class="chat-img pull-right"></span>
@@ -257,8 +285,8 @@
                                 <small class="pull-center text-muted">
                                 <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                               </div>
-                            </div>
                             <p><?php echo $content; ?></p>
+                            </div>
                           </li>
                           <?php } ?>
                         </ul>
@@ -284,7 +312,7 @@
                         <!-- 空白 -->
                     <Table border="0" width="100%" height="50" cellspacing="0" bgcolor="#ffffff">
                       <Tr>
-                      <Td align="center" valign="top"></Td>
+                        <Td align="center" valign="top"></Td>
                       </Tr>
                     </Table>
           </div>

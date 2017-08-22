@@ -103,6 +103,21 @@
         // header('Location: answer.php');
             }
 
+
+// // 質問内容取得
+//     $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'];
+//     $stmt = $dbh->prepare($sql);
+//     $stmt->execute();
+//     $chat = array();
+//         while ($rec = $stmt->fetch(PDO::FETCH_ASSOC)) {
+//           $chat[] = array("member_id"=>$rec['member_id'],
+//                             "content"=>$rec['content'],
+//                           "answer_id"=>$rec['answer_id'],
+//                             "created"=>$rec['created']);
+
+//     }
+
+
 // 質問者一覧表示
     $sql = 'SELECT COUNT(*) AS cnt,`questions`.`member_id`, `members`.`name` FROM `questions` INNER JOIN `members` ON `questions`.`member_id` =`members`.`member_id` WHERE `article_id` ='.$_SESSION['article_id'].' GROUP BY `member_id`';
     $stmt = $dbh->prepare($sql);
@@ -114,6 +129,9 @@
                              "name"=>$record['name']);
     }
 
+
+
+// 質問者の名前を表示させるため
     if (isset($_GET['member_id'])) {
 
     $sql = 'SELECT * FROM `members` WHERE `member_id`='.$_GET['member_id'];
@@ -121,6 +139,7 @@
     $stmt->execute();
     $record = $stmt->fetch(PDO::FETCH_ASSOC);
     $nana = $record['name'];
+
 // 質問内容取得
     $sql = 'SELECT * FROM `questions` WHERE `article_id`='.$_SESSION['article_id'].' AND `member_id`='.$_GET['member_id'].' ORDER BY `created` DESC';
     $stmt = $dbh->prepare($sql);
@@ -131,8 +150,11 @@
                             "content"=>$rec['content'],
                           "answer_id"=>$rec['answer_id'],
                             "created"=>$rec['created']);
-      }
-      }
+
+    }
+
+    }
+
 
 
 
@@ -178,8 +200,6 @@
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/risa_main.css" rel="stylesheet">
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
-    <link href="assets/css/card_ag_original.css" rel="stylesheet">
-    <link href="assets/css/body.css" rel="stylesheet">
 
   </head>
 
@@ -239,27 +259,27 @@
                           <span class="chat-img pull-right"></span>
                           <div class="chat-body clearfix user">
                             <div class="header">
-                              <strong class="pull-right primary-font"><?php echo $que; ?></strong>
+                              <strong class="primary-font"><?php echo $que; ?></strong>
                               <small class="pull-center text-muted">
                               <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                             </div>
-                          </div>
                           <p><?php echo $content; ?></p>
+                          </div>
                         </li>
-                        <?php } ?>
                       </ul>
                       <ul class="chat">
+                        <?php } ?>
                         <?php if ($answer == -1) {?>
                         <li class="right clearfix" align="left">
                           <span class="chat-img pull-left"></span>
                           <div class="chat-body clearfix farmer">
                             <div class="header">
-                              <strong class="primary-font"><?php echo $nana; ?>さん</strong>
+                              <strong class="pull-left primary-font"><?php echo $name; ?>さん</strong>
                               <small class="pull-center text-muted">
                               <span class="glyphicon glyphicon-time"></span><?php echo $time; ?></small>
                             </div>
-                          </div>
                           <p><?php echo $content; ?></p>
+                          </div>
                         </li>
                         <?php } ?>
                       </ul>

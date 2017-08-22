@@ -120,6 +120,7 @@ if (empty($error)){
     <link href="assets/css/timeline.css" rel="stylesheet">
     <link href="assets/css/en_main.css" rel="stylesheet">
     <link href="assets/css/en_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
      -->
@@ -136,7 +137,7 @@ if (empty($error)){
   <div class="container" style="padding-top: 60px;">
   <div class="row">
     <!-- left column -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="col-md-2 col-sm-6 col-xs-12"> 
       <div class="text-center">
         <?php if (empty($account[0]['profile'])){ ?>
         <img src="img/misteryman.jpg" style="width:160px;height:160px " alt="avatar">
@@ -152,7 +153,7 @@ if (empty($error)){
               <p class="error">*ファイルはjpg,gif,pngのいずれかを指定してください」</p>
  　　　　　　　<?php }?>
     
-        <div>
+        <div> 
       　 <a type="submit" href="account.php" class=" btn btn-primary col-xs-12">アカウント情報の編集</a>
         </div>
         <br><br>
@@ -161,18 +162,20 @@ if (empty($error)){
          </div>
          <br><br>
          <div>
+         <a type="submit" href="articles.php" class="btn btn-primary col-xs-12 ">募集記事一覧</a>
+         </div>
+          <br><br>
+
+         <div>
         <a type="submit" href="top.php" class=" btn btn-primary col-xs-12">トップページへ戻る</a>
         </div>
       </div>
     </div>
     <!-- edit form column -->
-    <div class="col-md-9 col-sm-8 col-xs-12 personal-info">
-      <!--<div class="alert alert-info alert-dismissable">
-        <a class="panel-close close" data-dismiss="alert">×</a> 
-        <i class="fa fa-coffee"></i>
-        This is an <strong>.alert</strong>. Use this to show important messages to the user.
-      </div>
-      --> 
+    <!-- <div class="col-md-9 col-sm-8 col-xs-12 personal-info"> -->
+    
+     <div class="col-md-9 col-md-offset-1 ">
+    
      <form method="post" action="" class="form-horizontal" role="form" enctype="multipart/form-data">
       <div class="text-center">
         <?php if (empty($account[0]['profile'])){ ?>
@@ -191,8 +194,8 @@ if (empty($error)){
         
         <input name="profile" type="file" class="text-center center-block well well-sm">
       </div>
-
-      <div class="row">
+  
+    <div class="row">
       <div class="col-md-9">
       <h3>現在登録されているアカウント情報</h3>
       <!-- <form class="form-horizontal" role="form"> -->
@@ -208,6 +211,13 @@ if (empty($error)){
           <div class="col-lg-8">
             <input name="email" class="form-control" value="<?php echo $account[0]['email'];?>" placeholder="例：aglandscapes@gmail.com" type="email">
              <?php echo $record['email'];?> 
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 control-label">パスワード</label>
+          <div class="col-lg-8">
+      　 　<a type="submit" href="password.php" class="btn btn-primary col-xs-6">パスワードを変更する</a> 
           </div>
         </div>
       
@@ -253,23 +263,24 @@ if (empty($error)){
         </div>
         <div class="form-group">
           <label class="col-lg-3 control-label">自己紹介</label>
-          <div class="col-lg-8">
-           <input name="self-introduction" style="border:1px solid #CCC;padding:60px;border-radius:10px;width:530px" 
-           value="<?php echo $account[0]['self-introduction'];?>" placeholder="200文字以内"> 
+          <div class="col-lg-8" >
+           <textarea name="self-introduction" cols=28 rows="5" style="border:1px solid #CCC;padding-left:0px;padding-top:0px;padding-right:0px;padding-bottom:30px;border-radius:10px;width:100%"  ><?php echo $account[0]['self-introduction'];?>
+           </textarea>
             
           </div>
         </div>
     
           <label class="text-center center-block ">
-            <input type="checkbox" value="" >
+            <input type="checkbox" name="agree_privacy" required="required">
             <span class="cr"><i class="cr-icon glyphicon "></i></span>
-            入力内容を確認しました。
+             <label for="agree">入力内容を確認しました。</label>
           </label>
 
         <div class="form-group">
           <label class="col-md-3 control-label"></label>
           <div class="col-md-8">
-          <?php if (empty(type=){ ?>
+              <!--issetこの変数は存在していた時-->
+             <!-- <h4 class="error">*入力した情報を確認しましたら、チェックを入れて保存してください。</h4> -->
             <input class="text-center center-block btn btn-primary" value="保存" type="submit">
             <br>
             <br>
@@ -278,7 +289,7 @@ if (empty($error)){
 
           </div>
         </div>
-
+       </div>
       </div><!-- md-6 end -->
 
 

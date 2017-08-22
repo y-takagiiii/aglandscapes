@@ -122,8 +122,6 @@
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="assets/css/form.css" rel="stylesheet">
     <link href="assets/css/timeline.css" rel="stylesheet">
-    <link href="assets/css/jpn_main.css" rel="stylesheet">
-    <link href="assets/css/jpn_ag_original.css" rel="stylesheet">
     <link href="assets/css/card_main.css" rel="stylesheet">
     <link href="assets/css/card_ag_original.css" rel="stylesheet">
     <link href="assets/css/body.css" rel="stylesheet">
@@ -151,7 +149,6 @@
       <hr>
       <div>
         <center>
-          <h3><p>募集記事の作成ありがとうございます！</p></h3>
           <h3><p>あなたの記事は下記の形で投稿されます。</p></h3>
         </center>
       </div><br>
@@ -171,7 +168,6 @@
               <br>
             </div>
             <center>
-              <!-- <a type="submit" href="top.php" class="btn btn-default">募集記事を投稿する</a> -->
               <input type="submit" class="btn btn-default" value="募集記事を投稿する">
               <input type="hidden" name="insert" value="1">
             </center>
@@ -196,7 +192,7 @@
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <!-- <script src="assets/js/jquery-3.1.1.js"></script> -->
+    <script src="assets/js/jquery-3.1.1.js"></script>
     <script src="assets/js/jquery-migrate-1.4.1.js"></script>
     <script src="assets/js/bootstrap.js"></script>
     <script>

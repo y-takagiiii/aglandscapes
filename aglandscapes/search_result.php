@@ -37,7 +37,7 @@
 
 
         //   //ログインチェック
-    if(isset($_SESSION['login_member_id']) && ($_SESSION['time'] + 3600 >time())){
+    if(isset($_SESSION['login_member_id']) && isset($_SESSION['time'])&&($_SESSION['time'] + 3600 > time() )){
         // ログインしている
       // 最終アクション時間を更新
     $_SESSION['time'] = time();
@@ -107,6 +107,13 @@
     $stmt_flag->execute();
     $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
 
+        //apply状態の取得
+    $sql='SELECT COUNT(*) as `apply_count` FROM `applies` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+    // sql文実行
+    $stmt_flag=$dbh->prepare($sql);
+    $stmt_flag->execute();
+    $apply_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
+
 
     // 全件配列に入れる
     $article[]=array(
@@ -130,7 +137,8 @@
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
     "comment"=>$record['comment'],
-    "favorite_flag"=>$favorite_cnt
+    "favorite_flag"=>$favorite_cnt['favorite_count'],
+    "apply_flag"=>$apply_cnt['apply_count']
     );
 
 
@@ -170,7 +178,6 @@
     $stmt->execute();
     // データ数取得
     $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($cnt['cnt']);
     $start=0;
     // 1ページ目：０
     // 2ページ目：１０
@@ -205,6 +212,13 @@
     $stmt_flag->execute();
     $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
 
+        //apply状態の取得
+    $sql='SELECT COUNT(*) as `apply_count` FROM `applies` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+    // sql文実行
+    $stmt_flag=$dbh->prepare($sql);
+    $stmt_flag->execute();
+    $apply_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
+
 
     // 全件配列に入れる
     $article[]=array(
@@ -228,7 +242,8 @@
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
     "comment"=>$record['comment'],
-    "favorite_flag"=>$favorite_cnt
+    "favorite_flag"=>$favorite_cnt['favorite_count'],
+    "apply_flag"=>$apply_cnt['apply_count']
     );
         if($favorite_cnt['favorite_count']==0){
           $favorite_flag=0; //favoriteされていない
@@ -271,7 +286,6 @@
     $stmt->execute();
     // データ数取得
     $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($cnt['cnt']);
 
 
     $start=0;
@@ -308,6 +322,13 @@
     $stmt_flag->execute();
     $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
 
+        //apply状態の取得
+    $sql='SELECT COUNT(*) as `apply_count` FROM `applies` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+    // sql文実行
+    $stmt_flag=$dbh->prepare($sql);
+    $stmt_flag->execute();
+    $apply_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
+
 
     // 全件配列に入れる
     $article[]=array(
@@ -331,7 +352,8 @@
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
     "comment"=>$record['comment'],
-    "favorite_flag"=>$favorite_cnt
+    "favorite_flag"=>$favorite_cnt['favorite_count'],
+    "apply_flag"=>$apply_cnt['apply_count']
     );
         if($favorite_cnt['favorite_count']==0){
           $favorite_flag=0; //favoriteされていない
@@ -341,6 +363,9 @@
     }}// if ($stmt === false)elseの閉じ
     }//作物検索閉じ
 }
+
+
+
 
 
 
@@ -370,7 +395,6 @@
     $stmt->execute();
     // データ数取得
     $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($cnt['cnt']);
     $start=0;
     // 1ページ目：０
     // 2ページ目：１０
@@ -417,7 +441,8 @@
     "treatment5"=>$record['treatment5'],
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
-    "comment"=>$record['comment']
+    "comment"=>$record['comment'],
+    "favorite_flag"=>0
     );
 
 
@@ -453,7 +478,6 @@
     $stmt->execute();
     // データ数取得
     $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($cnt['cnt']);
     $start=0;
     // 1ページ目：０
     // 2ページ目：１０
@@ -509,13 +533,10 @@
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
     "comment"=>$record['comment'],
-    "favorite_flag"=>$favorite_cnt
+    "favorite_flag"=>0
+
     );
-        if($favorite_cnt['favorite_count']==0){
-          $favorite_flag=0; //favoriteされていない
-        }else{
-          $favorite_flag=1; //favoriteされている
-        }
+
     }}
     
 
@@ -551,7 +572,6 @@
     $stmt->execute();
     // データ数取得
     $cnt=$stmt->fetch(PDO::FETCH_ASSOC);
-    var_dump($cnt['cnt']);
 
 
     $start=0;
@@ -599,7 +619,9 @@
     "treatment5"=>$record['treatment5'],
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
-    "comment"=>$record['comment']
+    "comment"=>$record['comment'],
+    "favorite_flag"=>0
+    
     );
     }
 }}
@@ -629,6 +651,7 @@
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
     <link href="assets/css/anly_main.css" rel="stylesheet">
     <link href="assets/css/anly_ag_original.css" rel="stylesheet">
+
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
      -->
@@ -697,9 +720,10 @@
     <?php $treatment6=$article_each['treatment6']; ?>
     <?php $landscape=$article_each['landscapes']; ?>
     <?php $comment=$article_each['comment']; ?>
-    <?php $favorite_flag=0; ?>
-        <?php if(isset($_SESSION['apply_flag'])){
-            $apply_flag=$_SESSION['apply_flag'];}?>
+    <?php if(isset($article_each['favorite_flag'])){$favorite_flag=$article_each['favorite_flag'];} ?> 
+
+    <?php if(isset($article_each['apply_flag'])){$apply_id=$article_each['apply_flag'];} ?>
+
   <div class="col-md-6">
 
     <?php require('card.php'); ?>
@@ -765,8 +789,8 @@
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="../assets/js/jquery-3.1.1.js"></script>
-    <script src="../assets/js/jquery-migrate-1.4.1.js"></script>
-    <script src="../assets/js/bootstrap.js"></script>
+    <script src="assets/js/jquery-3.1.1.js"></script>
+    <script src="assets/js/jquery-migrate-1.4.1.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
   </body>
 </html>

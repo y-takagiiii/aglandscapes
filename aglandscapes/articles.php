@@ -155,7 +155,7 @@
                       $start = $record['start'];
                       $finish = $record['finish']; ?>
                     <tr>
-                      <th class="hidden-xs">タイトル</th>
+                      <th class="hidden-xs" style="width: 126px">タイトル</th>
                       <th>期間</th>
                       <th>質問</th>
                     </tr>

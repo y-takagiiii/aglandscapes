@@ -9,10 +9,14 @@
       if(!isset($error)){
         // $_SESSION['search_items'] = array($_POST['start'],$_POST['finish'],$_POST['product']);
         // $_SESSION['search_items2'] = array('product'=>$_POST['value']);
+        if(!empty($_POST['area_name'])&&(empty($_POST['prefecture']))){
+          $_SESSION['search_items'] = $_SESSION['search_items'];
+        }else{
         $_SESSION['search_items'] = $_POST;
+        }
         // $_SESSION['search_items']['prefecture'] = $_GET['prefecture'];
 
-                header('Location: search_check.php');
+                header('Location: search_result.php');
         exit();
       }
     }
@@ -60,9 +64,23 @@
 <!-- コンテンツ -->
 <!-- タブシステム -->
   <!-- TAB CONTROLLERS -->
+<?php if ($_GET['type'] == 'pre'){ ?>
 <input id="panel-1-ctrl" class="panel-radios" type="radio" name="tab-radios" checked>
-<input id="panel-2-ctrl" class="panel-radios" type="radio" name="tab-radios">
-<input id="panel-3-ctrl" class="panel-radios" type="radio" name="tab-radios">
+ <?php }else{ ?>
+<input id="panel-1-ctrl" class="panel-radios" type="radio" name="tab-radios">
+<?php } ?>
+
+  <?php if ($_GET['type'] == 'term'){ ?>
+<input id="panel-2-ctrl" class="panel-radios" type="radio" name="tab-radios" checked>
+ <?php }else{ ?>
+<input id="panel-2-ctrl" class="panel-radios" type="radio" name="tab-radios" >
+<?php } ?>
+
+<?php if ($_GET['type'] == 'product'){ ?>
+<input id="panel-3-ctrl" class="panel-radios" type="radio" name="tab-radios" checked>
+ <?php }else{ ?>
+<input id="panel-3-ctrl" class="panel-radios" type="radio" name="tab-radios" >
+<?php } ?>
 
 <!-- TABS LIST -->
 <div class="row">
@@ -93,8 +111,12 @@
           <!-- 選んだ都道府県を表示 -->
           <div class="low" style="text-align: center">
           <form method="post" action="">
-            <input type="text" id="my_selsct_area">
+            <input type="text" id="my_selsct_area" name="area_name">
+            <?php if(empty($_SESSION['search_items']['prefecture'])){ ?>
             <input type="hidden" name="prefecture" id="my_selsct_code">
+            <?php }else{ ?>
+            <input type="hidden" name="prefecture" id="my_selsct_code" value="<?php $_SESSION['search_items']['prefecture'] ?>">
+            <?php } ?>
             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>検索</button>
           </form>
           </div>

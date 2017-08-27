@@ -12,10 +12,6 @@
 
 
       $sql = 'SELECT * FROM `members` WHERE `member_id` ='.$_SESSION['login_member_id'];
-      // ログインする際にはPOST送信で送信されているのでarray($POST())になるが
-      // すでにログインしている人をSESSIONで情報を保存している
-      // どこの画面からでも使えるSESSIONで使える
-      // ログインしている情報をいろんなページで閲覧できるようにSESSIONで保存した方が使いやすい
       $stmt   = $dbh->prepare($sql);
       $stmt->execute();
       $record = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,34 +34,72 @@
       }
 
 
+      // 記事を書いた人のIDからカード情報取り出し
     $sql = 'SELECT * FROM `articles` WHERE `member_id`='.$_SESSION['login_member_id'];
-    $stmt = $dbh->prepare($sql);
-    $stmt->execute();
+    $stmt2 = $dbh->prepare($sql);
+    $stmt2->execute();
     $card = array();
 
-    while ($record = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    while ($record2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
 
-          $card[] = array("article_id"=>$record['article_id'],
-                           "member_id"=>$record['member_id'],
-                               "title"=>$record['title'],
-                       "prefecture_id"=>$record['prefecture_id'],
-                               "place"=>$record['place'],
-                              "access"=>$record['access'],
-                               "start"=>$record['start'],
-                              "finish"=>$record['finish'],
-                          "product_id"=>$record['product_id'],
-                                "work"=>$record['work'],
-                          "treatment1"=>$record['treatment1'],
-                          "treatment2"=>$record['treatment2'],
-                          "treatment3"=>$record['treatment3'],
-                          "treatment4"=>$record['treatment4'],
-                          "treatment5"=>$record['treatment5'],
-                          "treatment6"=>$record['treatment6'],
-                          "landscapes"=>$record['landscapes'],
-                             "comment"=>$record['comment'],
-                              );
+
+          // 応募者一覧
+          $sql='SELECT * FROM `members` INNER JOIN `applies` ON `members`.`member_id`=`applies`.`member_id` WHERE `applies`.`article_id`='.$record2['article_id'];
+
+          $stmt4 = $dbh->prepare($sql);
+          $stmt4->execute();
+          $applicant=array();
+          while($record4 = $stmt4->fetch(PDO::FETCH_ASSOC)){
+
+            $applicant[]=array('member_id'=>$record4['member_id'],
+                                    "name"=>$record4['name']);
+
+
+                           //                "email"=>$record4['email'],
+                           //          "address"=>$record4['address'],
+                           //       "phone_number"=>$record4['phone_number'],
+                           //            "birthday"=>$record4['birthday'],
+                           // "self-introduction"=>$record4['self-introduction'],
+                           //         "article_id"=>$record4['article_id']);
+
+          }
+          // $card = array();
+
+          // 採用者
+          $sql = 'SELECT * FROM `members` INNER JOIN `applies` ON `members`.`member_id`=`applies`.`member_id` WHERE `flag`= 1'.' AND `article_id`='.$record2['article_id'];
+          $stmt5 = $dbh->prepare($sql);
+          $stmt5->execute();
+          $record5 = $stmt5->fetch(PDO::FETCH_ASSOC);
+          $name1 = $record5['name'];
+
+
+
+          $card[] = array("article_id"=>$record2['article_id'],
+                           "member_id"=>$record2['member_id'],
+                               "title"=>$record2['title'],
+                       "prefecture_id"=>$record2['prefecture_id'],
+                               "place"=>$record2['place'],
+                              "access"=>$record2['access'],
+                               "start"=>$record2['start'],
+                              "finish"=>$record2['finish'],
+                          "product_id"=>$record2['product_id'],
+                                "work"=>$record2['work'],
+                          "treatment1"=>$record2['treatment1'],
+                          "treatment2"=>$record2['treatment2'],
+                          "treatment3"=>$record2['treatment3'],
+                          "treatment4"=>$record2['treatment4'],
+                          "treatment5"=>$record2['treatment5'],
+                          "treatment6"=>$record2['treatment6'],
+                          "landscapes"=>$record2['landscapes'],
+                             "comment"=>$record2['comment'],
+                           "applicant"=>$applicant,
+                                "flag"=>$name1);
 
     }
+
+
+
+
 
 
 
@@ -122,7 +156,7 @@
             <?php echo $name; ?>さん
           </div>
           <div>
-            <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='account.php'">アカウント情報の編集</button>
+            <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='account.php'">アカウント情報の編集</button>
           </div>
           <br><br>
           <div>
@@ -130,7 +164,7 @@
           </div>
           <br><br>
           <div>
-            <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='top.php'">トップページへ戻る</button>
+            <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='top.php'">トップページへ戻る</button>
           </div>
         </div>
       </div>
@@ -149,22 +183,55 @@
               <div class="col-sm-12" style="width: 790px;">
                <table class="table table-striped table-bordered checkout-table">
                   <tbody>
-                  <?php foreach ($card as $record) {
-                      $article = $record['article_id'];
-                      $title = $record['title'];
-                      $start = $record['start'];
-                      $finish = $record['finish']; ?>
                     <tr>
                       <th class="hidden-xs" style="width: 126px">タイトル</th>
                       <th>期間</th>
                       <th>質問</th>
+                      <th>応募者</th>
+                      <th>採用者</th>
+                      <th>評価</th>
                     </tr>
+                    <?php foreach ($card as $card_each) {
+                      $article = $card_each['article_id'];
+                      $title = $card_each['title'];
+                      $start = $card_each['start'];
+                      $finish = $card_each['finish']; ?>
+
                     <?php if(count($card) >0){ ?>
                     <tr>
-                      <td class="hidden-xs"><h5><?php echo $title; ?></h5></td>
-                      <td><h5 class="product-title font-alt"><?php echo $start.'~'.$finish; ?></h5></td>
+                      <!-- 記事タイトル -->
+                      <td class="hidden-xs"><h5><?php echo $title; ?></h5>
+                      </td>
+                      <!-- 期間表示 -->
                       <td>
-                      <button type="submit" class="btn btn-default" onClick="location.href='answer.php?article_id=<?php echo $article;?>'">質問ルームへ</button></td>
+                        <h5 class="product-title font-alt"><?php echo $start.'~'.$finish; ?></h5>
+                      </td>
+                      <!-- 質問回答チャット -->
+                      <td>
+                        <button type="submit" class="btn btn-default" onClick="location.href='answer.php?article_id=<?php echo $article;?>'">質問ルームへ</button>
+                      </td>
+                      <!-- 応募者一覧 -->
+                      <td>
+                        <?php foreach($card_each['applicant'] as $applicant_each){ ?>
+                        <a href="apply_detail.php?member_id=<?php echo $_SESSION['applicant_id']; ?>&article_id=<?php echo $_SESSION['applicant_article']; ?>">
+                          <?php echo $applicant_each['name'];
+                          $_SESSION['applicant_id']=$applicant_each['member_id'];
+                          $_SESSION['applicant_article']=$article; ?>
+                        </a><br>
+                        <?php }?>
+                      </td>
+                      <!-- 採用者 -->
+                      <td>
+                      <p style="margin-top: 10%;">
+                      <?php if (isset($record5)) { ?>
+                      <?php echo $card_each['flag']; ?>
+                      <?php } ?>
+                      </p>
+                      </td>
+                      <!-- 評価する -->
+                      <td>
+                        <button type="submit" class="btn btn-default" onClick="location.href='evaluation.php?article_id=<?php echo $article;?>&member_id=<?php echo $card_each['member_id']; ?>'">評価する</button>
+                      </td>
                     </tr>
                     <?php }} ?>
 

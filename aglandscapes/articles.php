@@ -51,8 +51,9 @@
           $applicant=array();
           while($record4 = $stmt4->fetch(PDO::FETCH_ASSOC)){
 
-            $applicant[]=array('member_id'=>$record4['member_id'],
-                                    "name"=>$record4['name']);
+            $applicant[] = array("member_id"=>$record4['member_id'],
+                                    "name"=>$record4['name'],
+                                    "flag"=>$record4['flag']);
 
 
                            //                "email"=>$record4['email'],
@@ -66,11 +67,13 @@
           // $card = array();
 
           // 採用者
-          $sql = 'SELECT * FROM `members` INNER JOIN `applies` ON `members`.`member_id`=`applies`.`member_id` WHERE `flag`= 1'.' AND `article_id`='.$record2['article_id'];
-          $stmt5 = $dbh->prepare($sql);
-          $stmt5->execute();
-          $record5 = $stmt5->fetch(PDO::FETCH_ASSOC);
-          $name1 = $record5['name'];
+          // $sql = 'SELECT * FROM `members` INNER JOIN `applies` ON `members`.`member_id`=`applies`.`member_id` WHERE `flag`= 1'.' AND `article_id`='.$record2['article_id'];
+          // $stmt5 = $dbh->prepare($sql);
+          // $stmt5->execute();
+
+          // $record5 = $stmt5->fetch(PDO::FETCH_ASSOC);
+          // // $id = $record5['member_id'];
+          // $name1 = $record5['name'];
 
 
 
@@ -92,18 +95,14 @@
                           "treatment6"=>$record2['treatment6'],
                           "landscapes"=>$record2['landscapes'],
                              "comment"=>$record2['comment'],
-                           "applicant"=>$applicant,
-                                "flag"=>$name1);
+                           "applicant"=>$applicant);
+                                // "flag"=>$name1);
 
     }
 
 
-
-
-
-
-
-
+        $_SESSION['applicant_article'] = $card[0]['article_id'];
+var_dump($_SESSION['applicant_article']);
 ?>
 
 <!DOCTYPE html>
@@ -188,8 +187,7 @@
                       <th>期間</th>
                       <th>質問</th>
                       <th>応募者</th>
-                      <th>採用者</th>
-                      <th>評価</th>
+                      <th>採用者　/　評価</th>
                     </tr>
                     <?php foreach ($card as $card_each) {
                       $article = $card_each['article_id'];
@@ -212,29 +210,32 @@
                       </td>
                       <!-- 応募者一覧 -->
                       <td>
-                        <?php foreach($card_each['applicant'] as $applicant_each){ ?>
-                        <a href="apply_detail.php?member_id=<?php echo $_SESSION['applicant_id']; ?>&article_id=<?php echo $_SESSION['applicant_article']; ?>">
-                          <?php echo $applicant_each['name'];
+
+                      <?php foreach($card_each['applicant'] as $applicant_each){ ?>
+                      <?php
                           $_SESSION['applicant_id']=$applicant_each['member_id'];
-                          $_SESSION['applicant_article']=$article; ?>
+                          $_SESSION['applicant_article']=$article;
+                      ?>
+                        <a href="apply_detail.php?member_id=<?php echo $_SESSION['applicant_id']; ?>&article_id=<?php echo $_SESSION['applicant_article']; ?>">
+                        <?php echo $applicant_each['name']; ?>
                         </a><br>
-                        <?php }?>
+                        <?php } ?>
                       </td>
                       <!-- 採用者 -->
                       <td>
-                      <p style="margin-top: 10%;">
-                      <?php if (isset($record5)) { ?>
-                      <?php echo $card_each['flag']; ?>
+                      <p>
+                      <?php foreach ($card_each['applicant'] as $applicant_each) { ?>
+                      <?php if ($applicant_each['flag'] == 1) { ?>
+                      <?php echo $applicant_each['name'].'　/　'; ?>
                       <?php } ?>
+                      <?php if ($applicant_each['flag'] == 1){ ?>
+                        <button type="submit" class="btn btn-default" onClick="location.href='evaluation.php?article_id=<?php echo $article; ?>&member_id=<?php echo $applicant_each['member_id']; ?>'">評価する</button><br>
+
+                      <?php } } ?>
                       </p>
-                      </td>
-                      <!-- 評価する -->
-                      <td>
-                        <button type="submit" class="btn btn-default" onClick="location.href='evaluation.php?article_id=<?php echo $article;?>&member_id=<?php echo $card_each['member_id']; ?>'">評価する</button>
                       </td>
                     </tr>
                     <?php }} ?>
-
                     <?php if(count($card) == 0){ ?>
                       <h5>まだ投稿した記事がありません</h5>
                      <?php } ?>

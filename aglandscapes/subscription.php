@@ -41,7 +41,8 @@
                              "name"=>$rec['name'],
                             "email"=>$rec['email'],
                      "phone_number"=>$rec['phone_number'],
-                          "address"=>$rec['address']);
+                          "address"=>$rec['address'],
+                          "profile"=>$rec['profile']);
     }
 
 
@@ -123,6 +124,7 @@
 
 
 
+
       foreach ($card as $record) {
 
 
@@ -143,8 +145,6 @@
     $comment = $record['comment'];
     $landscape = $record['landscapes'];
     $article_id = $record['article_id'];
-
-
   }
 
 
@@ -180,6 +180,7 @@
     <link href="assets/css/risa_ag_original.css" rel="stylesheet">
     <link href="assets/css/kaz_ag_original.css" rel="stylesheet">
     <link href="assets/css/kaz_ag_original.css" rel="stylesheet">
+    <link href="assets/css/body.css" rel="stylesheet">
 
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
@@ -261,7 +262,9 @@
               <div class="form-group">
                 <label class="col-sm-4 control-label">応 募 先</label>
                 <div class="col-sm-8">
+                <center>
                   <?php require('card.php'); ?>
+                </center>
                 </div><!-- <div class="lib-row lib-desc"> -->
               </div><!-- <div class="row box-shadow"> -->
             </div><!--<div class="lib-panel"> -->
@@ -274,7 +277,7 @@
                   <input type="checkbox" name="agree_privacy" id="agree" value="" required="required">
                   <label for="agree">こちらの内容で応募しても宜しいですか？</label><br><br>
                   <a type="button" href="search_result.php" class="btn btn-default">検索画面に戻る</a>
-                  <input type="submit" class="btn btn-default" value="確認画面へ"><br><br>
+                  <input type="submit" class="btn btn-default" value="応募する"><br><br>
                 </center>
                 <br>
                 <br>

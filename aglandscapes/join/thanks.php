@@ -1,6 +1,7 @@
 <?php
     session_start(); //sesstion変数を使うときに必ず記述
 
+
     // var_dump($_SESSION['join']);
 
     // 会員登録ボタンが押されたとき
@@ -42,8 +43,10 @@
     <link href="../assets/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="../assets/css/kaz_form.css" rel="stylesheet">
     <link href="../assets/css/timeline.css" rel="stylesheet">
-    <link href="../assets/css/kaz_main.css" rel="stylesheet">
-    <link href="../assets/css/kaz_ag.original.css" rel="stylesheet">
+    <link href="../assets/css/anly_main.css" rel="stylesheet">
+    <link href="../assets/css/anly_ag_original.css" rel="stylesheet">
+    <link href="../assets/css/body.css" rel="stylesheet">
+
 
     <!--
       designフォルダ内では2つパスの位置を戻ってからcssにアクセスしていることに注意！
@@ -58,19 +61,23 @@
     <div class="row">
       <div class="col-md-6 col-md-offset-3 content-margin-top">
         <div class="well">
-          <center><h2><b>ようこそ、AGLANDSCAPESへ </b></h2>
+          <center><h2><b>ようこそ、AGLANDSCAPESへ </b></h2></center>
         </div>
-      <div>
-      <center><img src="../img/people.jpg" width="550" height="400"></center><br>
+        <div>
+          <center><img src="../img/people.jpg" width="550" height="400"></center><br>
+        </div>
+        <div>
+          <center>
+            <a href="../top.php" class="btn btn-default">ログイン</a></center><br><br><br>
+        </div>
       </div>
-      <div>
-        <center>
-        <a href="../top.php" class="btn btn-default">ログイン</a></center><br><br><br>
-      </div>
+    </div>
   </div>
 
 
 
+      <!-- フッター -->
+      <?php include('../footer.php') ?>
 
 
 

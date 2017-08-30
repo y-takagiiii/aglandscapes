@@ -6,9 +6,15 @@
 // フォームからデータが送信されたとき
 if(!empty($_POST)){
   // エラー項目の確認
-  // ニックネームが未入力
+    if($_POST['name']=='管理者'){
+      $error['name']='admin';
+    }
+    // 氏名が未入力
     if($_POST['name']==''){
       $error['name']='blank';
+    }
+    if($_POST['email']=='al.admin@gmail.com'){
+      $error['email']='admin';
     }
   // メールアドレスが未入力
       if($_POST['email']==''){
@@ -108,6 +114,9 @@ if(!empty($_POST)){
             <?php if (isset($error['name']) &&($error['name']=='blank')) { ?>
                 <h6 style="color: red">*名前を入力してください。</h6>
             <?php } ?>
+           <?php if (isset($error['name']) &&($error['name']=='admin')) { ?>
+                <h6 style="color: red">*その名前は使用できません。</h6>
+            <?php } ?>
 
             </div>
           </div>
@@ -125,6 +134,9 @@ if(!empty($_POST)){
             <?php } ?>
             <?php if (isset($error['email']) &&($error['email']=='blank')) { ?>
                 <h6 style="color: red">*メールアドレスを入力してください。</h6>
+            <?php } ?>
+            <?php if (isset($error['email']) &&($error['email']=='admin')) { ?>
+                <h6 style="color: red">*そのメールアドレスは使用できません。</h6>
             <?php } ?>
 
             </div>

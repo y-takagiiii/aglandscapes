@@ -173,7 +173,7 @@
     $max_page=0;
 
 // このSQL文を実行して、取得したデータ数をvar_dumpで表示しましょう。
-    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`=\''.$_SESSION['search_items']['finish'].'\'';
+    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`>=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`<=\''.$_SESSION['search_items']['finish'].'\'';
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     // データ数取得
@@ -196,6 +196,9 @@
 
     // articles&products&prefectureより全てのデータを取ってくる
     $sql=sprintf('SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`>=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`<=\''.$_SESSION['search_items']['finish'].'\''. ' ORDER BY `articles`.`created` DESC LIMIT %d,%d',$start,$article_number);
+
+         // SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`>='2017-09-01' AND `articles`.`finish`<='2017-09-10'
+
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     if ($stmt === false) {
@@ -245,6 +248,7 @@
     "favorite_flag"=>$favorite_cnt['favorite_count'],
     "apply_flag"=>$apply_cnt['apply_count']
     );
+
         if($favorite_cnt['favorite_count']==0){
           $favorite_flag=0; //favoriteされていない
         }else{
@@ -473,7 +477,7 @@
     $max_page=0;
 
 // このSQL文を実行して、取得したデータ数をvar_dumpで表示しましょう。
-    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`=\''.$_SESSION['search_items']['finish'].'\'';
+    $sql='SELECT COUNT(*) AS `cnt` FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`>=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`<=\''.$_SESSION['search_items']['finish'].'\'';
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     // データ数取得
@@ -496,19 +500,11 @@
 
 
     // articles&products&prefectureより全てのデータを取ってくる
-    $sql=sprintf('SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`=\''.$_SESSION['search_items']['finish'].'\''. ' ORDER BY `articles`.`created` DESC LIMIT %d,%d',$start,$article_number);
+    $sql=sprintf('SELECT * FROM `products` INNER JOIN (`articles` INNER JOIN `prefectures` ON `articles`.`prefecture_id`=`prefectures`.`prefecture_id`) ON `products`.`product_id`=`articles`.`product_id` WHERE `articles`.`start`>=\''.$_SESSION['search_items']['start'].'\' AND `articles`.`finish`<=\''.$_SESSION['search_items']['finish'].'\''. ' ORDER BY `articles`.`created` DESC LIMIT %d,%d',$start,$article_number);
     $stmt=$dbh->prepare($sql);
     $stmt->execute();
     $article=array();
     while($record=$stmt->fetch(PDO::FETCH_ASSOC)){
-
-        // favorite状態の取得（ログインユーザーごと）
-    $sql='SELECT COUNT(*) as `favorite_count` FROM `favorites` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
-
-    // sql文実行
-    $stmt_flag=$dbh->prepare($sql);
-    $stmt_flag->execute();
-    $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
 
 
     // 全件配列に入れる
@@ -729,7 +725,7 @@
     <?php require('card.php'); ?>
 </div><!-- col-md-6 -->
   <?php }}else{
-    echo "現在募集はありません。";
+    echo '<h2>'."検索結果は見つかりませんでした。".'<h2>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>';
     } ?>
     <?php if(isset($article)){if($article==false){
         echo '検索結果はありませんでした。'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>'.'<br>';

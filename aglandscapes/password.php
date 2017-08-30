@@ -10,6 +10,14 @@
       // 最終アクション時間を更新
     $_SESSION['time'] = time();
 
+
+//画像とname表示用
+    $sql='SELECT * FROM `members` WHERE `member_id`='.$_SESSION['login_member_id'];
+    $stmt=$dbh->prepare($sql);
+    $stmt->execute();
+    while($record2=$stmt->fetch(PDO::FETCH_ASSOC)){
+      $account[]=array("name"=>$record2['name'],"profile"=>$record2['profile']);}
+
         // フォームからデータが送信されたとき
         if(!empty($_POST)){
 
@@ -41,6 +49,7 @@
         if(empty($error)){
 
        $sql = 'UPDATE `members` SET `password`=? WHERE `member_id`='.$_SESSION['login_member_id'];
+    }
 
     //     // SQL文実行
         $data=array(sha1($_POST['password']));
@@ -48,9 +57,9 @@
         $stmt->execute($data);
 
               
-          header('Location: password.php');
+          header('Location: account.php');
           exit();}
-    }
+    
   }else{
           header('Location: top.php');
           exit();
@@ -89,39 +98,37 @@
   <div class="container" style="padding-top: 60px;">
     <div class="row">
 <!--         left column         -->
-      <div class="col-md-2 col-sm-6 col-xs-12">
-        <div class="text-center">
-        <?php if (empty($account[0]['profile'])){ ?>
-        <img src="img/misteryman.jpg" style="width:160px;height:160px " alt="avatar">
-        <?php }else{ ?>
-        <img src="member_picture/<?php echo $account[0]['profile']; ?>" style="width:160px; height:160px " alt="avatar">
-
-        <?php } ?>
-
-          <?php if (isset($record2['name'])){ ?>
-          <div><?php echo $record2['name']; ?>さん、ようこそ
-          </div>
-          <?php } ?>
-          <div>
-          <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='account.php'">アカウント情報の編集</button>
-          </div>
-          <br>
-          <div>
-          <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事作成画面</button>
-          </div>
-          <br>
-          <div>
-          <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事一覧</button>
-          </div>
-<!--           <br><br>
-           <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事一覧</button>
-          </div> -->
-          <br><br>
-          <div>
-          <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='top.php'">トップページへ戻る</button>
+          <div class="col-md-2 col-sm-6 col-xs-12">
+            <div class="text-center">
+              <?php if (empty($account[0]['profile'])){ ?>
+              <img src="img/misteryman.jpg" style="width:160px;height:160px" alt="avatar">
+              <?php }else{ ?>
+              <img src="member_picture/<?php echo $account[0]['profile']; ?>" style="width:160px; height:160px" alt="avatar">
+              <?php } ?>
+              <div><?php echo $account[0]['name']; ?>さん、ようこそ
+              </div>
+              <br>
+              <br>
+              <div>
+                <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='account.php'">アカウント情報の編集</button>
+                <br>
+                <br>
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='add_post.php'">募集記事作成画面</button>
+                <br>
+                <br>
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary col-xs-12" onClick="location.href='articles.php'">募集記事一覧</button>
+                <br>
+                <br>
+              </div>
+              <div>
+                <button type="submit" class=" btn btn-primary col-xs-12" onClick="location.href='top.php'">トップページへ戻る</button>
+              </div>
           </div>
         </div>
-      </div>
 
   <div class="container">
     <div class="row">

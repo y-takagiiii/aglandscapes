@@ -22,6 +22,13 @@
     $stmt_flag->execute();
     $favorite_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
 
+    //apply状態の取得
+    $sql='SELECT COUNT(*) as `apply_count` FROM `applies` WHERE `article_id`='.$record['article_id'].' AND `member_id`='.$_SESSION['login_member_id'];
+    // sql文実行
+    $stmt_flag=$dbh->prepare($sql);
+    $stmt_flag->execute();
+    $apply_cnt=$stmt_flag->fetch(PDO::FETCH_ASSOC);
+
     // 全件配列に入れる
     $article[]=array(
     "article_id"=>$record['article_id'],
@@ -44,7 +51,8 @@
     "treatment6"=>$record['treatment6'],
     "landscapes"=>$record['landscapes'],
     "comment"=>$record['comment'],
-    "favorite_flag"=>$favorite_cnt['favorite_count']
+    "favorite_flag"=>$favorite_cnt['favorite_count'],
+    "apply_flag"=>$apply_cnt['apply_count']
     );
 
     }
@@ -77,8 +85,9 @@
     <?php $landscape=$article_each['landscapes']; ?>
     <?php $comment=$article_each['comment']; ?>
     <?php $favorite_flag=$article_each['favorite_flag']; ?>
-    <?php if(isset($_SESSION['apply_flag'])){
-        $apply_flag=$_SESSION['apply_flag'];} ?>
+    <?php $apply_id=$article_each['apply_flag']; ?>
+
+
 <?php require('card.php');?>
   <?php } ?>
 

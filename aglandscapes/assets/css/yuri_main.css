@@ -247,7 +247,7 @@ label.panel-label:hover {
 
 #panels {
   background-color: white;
-  height: 700px;
+  height: 100%;
 }
 #panels .container {
   margin: 0 auto;
